@@ -15,6 +15,7 @@ Pelanggan scan QR di meja, order sendiri dari telefon, dan bayar di kaunter sele
 1. **Pelanggan**: carian menu, kategori, semak pesanan sebelum hantar, nota untuk dapur, status setiap order, kad bil, panggil staf, terima kasih dan review.
 2. **Dapur**: order baru, sedang dimasak, siap dihidang, senarai "perlu disediakan", tanda stok habis.
 3. **Kaunter**: grid meja, bil penuh ikut meja, amaran panggil staf, terima bayaran (Tunai / DuitNow QR / Kad), jualan hari ini, bil terakhir.
+4. **Urus Menu** (owner / manager): tambah, edit dan padam menu, muat naik gambar, kategori, susunan, tag Laris dan stok habis.
 
 ## Template UI
 
@@ -39,6 +40,6 @@ AUDIT.md          hasil audit dan senarai kerja sebelum produksi
 
 ## Status
 
-Ini **demo** tanpa backend. Data disimpan dalam browser sahaja (`localStorage`). Tab dalam browser yang sama berkongsi data. Butang **Reset demo** padam semua data demo.
+Ini **demo** tanpa backend. Data disimpan dalam browser sahaja (`localStorage`). Tab dalam browser yang sama berkongsi data. Butang **Reset demo** padam order dan jualan demo. Menu yang diedit kekal, dan boleh dipulihkan guna **Pulihkan menu asal** di skrin Urus Menu.
 
 Lihat [AUDIT.md](AUDIT.md) untuk senarai perkara yang perlu ada sebelum guna di kedai sebenar.

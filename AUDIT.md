@@ -28,7 +28,17 @@ Audit ada dua bahagian:
 | 13 | Rendah | Aksesibiliti: dialog, tab dan butang ikon tiada label. | `aria-label`, `role="dialog"`, `aria-pressed`, `aria-live` untuk toast, dan kekunci `Esc` untuk tutup skrin semak. |
 | 14 | Rendah | Animasi tetap berjalan untuk pengguna yang pilih "kurangkan gerakan". | Ikut tetapan `prefers-reduced-motion`. |
 
-## Ciri baru dalam versi ini
+## Skrin Urus Menu (owner / manager)
+
+- Tambah, edit dan padam menu: nama, penerangan, harga, kategori, emoji, tag "Laris" dan status habis.
+- Muat naik gambar dari telefon atau galeri. Gambar dipotong 4:3 dan dikecilkan ke 640×480 JPEG (sekitar 40–80 KB).
+- Tambah kategori baru dan susun kategori serta menu (butang ↑ ↓).
+- Padam menu dan pulihkan menu asal perlu ditekan dua kali, untuk elak tersalah tekan.
+- **Bil tak berubah bila menu diedit.** Setiap order simpan nama dan harga pada masa order dibuat. Bil yang sedia ada kekal walaupun harga ditukar atau menu dipadam.
+- Kalau storan browser penuh, menu tak disimpan dan mesej ralat dipaparkan. Tiada data yang hilang tanpa diberitahu.
+- "Reset demo" hanya padam order dan jualan. Menu yang dah diedit kekal.
+
+## Ciri baru dalam versi sebelum ini
 
 - **5 template UI**: Bina Klasik, Kopitiam, Warisan Kelantan, Kafe Moden, Gerai Malam. Setiap satu ada warna, font, bucu dan susun atur menu (senarai atau grid) sendiri.
 - Template dan nama kedai dibawa dalam link QR (`?meja=7&kedai=...&tema=...`). Kad QR yang dicetak juga ikut template.
@@ -48,8 +58,7 @@ Audit ada dua bahagian:
 | 2 | Wajib | **Token meja yang tak boleh diteka** | Sesiapa boleh tukar `?meja=7` jadi `?meja=8` dan hantar order atas nama meja lain. Guna kod rawak untuk setiap meja (contoh `?t=k8F2xQ`), dan tukar kod bila perlu. |
 | 3 | Wajib | **Log masuk staf** untuk skrin dapur dan kaunter | Sekarang sesiapa yang ada link boleh buka kaunter dan tanda bil dibayar. |
 | 4 | Wajib | **Had kadar (rate limit) dan pengesahan order di server** | Untuk elak order palsu atau spam, dan semak harga di server, bukan di telefon pelanggan. |
-| 5 | Tinggi | **Urus menu sendiri** (tambah, edit, gambar, harga) | Sekarang menu ditulis terus dalam kod. |
-| 6 | Tinggi | **Gambar makanan sebenar** | Emoji sesuai untuk demo, tapi gambar sebenar lebih meyakinkan dan meningkatkan jualan. |
+| 5 | Tinggi | **Urus menu di server** dengan log masuk owner/manager | Skrin Urus Menu dah ada dalam demo, tapi menu dan gambar disimpan dalam browser sahaja (had sekitar 5 MB). Dalam produksi, simpan dalam database dan gambar dalam storage (contoh Supabase Storage). |
 | 7 | Tinggi | **Pilihan item** (panas/ais, saiz, tahap pedas, tambah telur) | Kedai di Kelantan banyak guna pilihan macam ni. Sekarang hanya ada ruang nota. |
 | 8 | Tinggi | **Cetak resit dan slip dapur** (printer thermal 58/80mm) | Banyak kedai masih nak resit kertas. |
 | 9 | Sederhana | **Laporan jualan** harian, mingguan, menu paling laku dan waktu puncak | Nilai utama untuk owner, dan sebab untuk langganan bulanan. |

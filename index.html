@@ -35,6 +35,7 @@
   --shadow:0 18px 44px -26px rgba(10,14,24,.5);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
@@ -89,13 +90,16 @@ input,textarea,select{font:inherit;color:inherit}
 .panel{min-width:0;display:grid;gap:10px;align-content:start}
 .panel-label{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 8px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:800;color:var(--muted)}
 .panel-label a{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600;font-size:12.5px}
-.p-cust{position:sticky;top:16px}
+.p-cust{position:sticky;top:16px;grid-row:1 / span 2}
+.p-menu{grid-column:2 / -1}
 @media (max-width:1180px){
   .tabs{display:flex}
   .stage{grid-template-columns:minmax(0,1fr)}
   .stage .panel{display:none}
-  .stage[data-show="cust"] .p-cust,.stage[data-show="kitchen"] .p-kitchen,.stage[data-show="counter"] .p-counter{display:grid}
-  .p-cust{position:static;justify-items:center}
+  .stage[data-show="cust"] .p-cust,.stage[data-show="kitchen"] .p-kitchen,.stage[data-show="counter"] .p-counter,.stage[data-show="menu"] .p-menu{display:grid}
+  .p-menu{grid-column:auto}
+  .tabs button{font-size:13px;padding:9px 4px}
+  .p-cust{position:static;justify-items:center;grid-row:auto}
   .p-cust .panel-label{width:100%;max-width:400px}
 }
 .why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -300,6 +304,65 @@ input,textarea,select{font:inherit;color:inherit}
 .hist div:last-child{border-bottom:0}
 .hist span:first-child{color:var(--muted)}
 
+/* Photos on menu tiles */
+.tile.has-img,.mg-thumb.has-img{padding:0;overflow:hidden}
+.tile img,.mg-thumb img,.ed-prev img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Menu manager */
+.mg-cats{margin:0;padding:0}
+.mg-list{display:grid;gap:14px}
+.mg-cat{display:grid;gap:6px}
+.mg-cat-h{display:flex;align-items:center;gap:10px;padding:2px 0 4px;border-bottom:1px solid var(--line)}
+.mg-cat-h .disp{font-size:16px}
+.mg-cat-h .mg-move{margin-left:auto}
+.mg-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:6px;border-radius:var(--r-sm)}
+.mg-row:hover{background:var(--sunk)}
+.mg-row.is-out .mg-info b{text-decoration:line-through;color:var(--muted)}
+.mg-thumb{width:52px;height:40px;border-radius:8px;background:var(--sunk);border:1px solid var(--line);display:grid;place-items:center;font-size:22px}
+.mg-info{min-width:0;display:grid}
+.mg-info b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mg-info span{font-size:12px;color:var(--muted)}
+.mg-info em{font-style:normal;font-weight:800;color:var(--accent)}
+.mg-price{font-size:13px;font-weight:700}
+.mg-move{display:flex;gap:4px}
+.icon-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-weight:800;display:grid;place-items:center;padding:0}
+.icon-btn:disabled{opacity:.35}
+@media (max-width:560px){
+  .mg-row{grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"t i e" "t p m"}
+  .mg-row .mg-thumb{grid-area:t}.mg-row .mg-info{grid-area:i}.mg-row .chip-btn{grid-area:e}
+  .mg-row .mg-price{grid-area:p}.mg-row .mg-move{grid-area:m;justify-self:end}
+}
+.chip-btn.danger{color:var(--danger);border-color:var(--danger-soft);background:var(--danger-soft)}
+
+/* Menu editor dialog */
+#editor{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:16px}
+#editor[hidden]{display:none}
+.ed-bg{position:absolute;inset:0;background:rgba(8,10,16,.5)}
+.ed-bg.anim{animation:fade .2s}
+.ed{position:relative;width:100%;max-width:560px;max-height:calc(100dvh - 32px);background:var(--surface);color:var(--ink);border-radius:var(--r-lg);display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.ed.anim{animation:pop .2s ease-out}
+@keyframes pop{from{transform:scale(.97);opacity:0}to{transform:none;opacity:1}}
+.ed-body{overflow-y:auto;padding:4px 18px 14px;display:grid;gap:14px;margin:0}
+.ed-photo{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:520px){.ed-photo{grid-template-columns:1fr}}
+.ed-prev{aspect-ratio:4/3;max-width:100%;border-radius:var(--radius);background:var(--sunk);border:1.5px dashed var(--line);display:grid;place-items:center;overflow:hidden}
+.ed-prev.has-img{border-style:solid}
+.ed-prev.loading{opacity:.5}
+.ed-emoji{font-size:56px;line-height:1}
+.ed-photo-act{display:grid;gap:8px;justify-items:start}
+.file-btn{cursor:pointer}
+.file-btn svg{flex:none}
+#ed-file:focus-visible + *, .file-btn:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.ed-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ed-grid .span2{grid-column:1/-1}
+@media (max-width:420px){.ed-grid{grid-template-columns:1fr}}
+.ed-grid select{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--sunk);width:100%;min-width:0}
+.opt{text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)}
+.check{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+.ed-err{margin:0;background:var(--danger-soft);color:var(--danger);border-radius:8px;padding:8px 12px;font-weight:700;font-size:13.5px}
+.ed-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+
 .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:50;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow);animation:fade .2s}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -337,6 +400,7 @@ input,textarea,select{font:inherit;color:inherit}
     <button role="tab" id="tab-cust" data-show="cust" aria-selected="true">Pelanggan</button>
     <button role="tab" id="tab-kitchen" data-show="kitchen" aria-selected="false">Dapur</button>
     <button role="tab" id="tab-counter" data-show="counter" aria-selected="false">Kaunter</button>
+    <button role="tab" id="tab-menu" data-show="menu" aria-selected="false">Urus Menu</button>
   </nav>
 
   <main class="stage" id="stage" data-show="cust">
@@ -353,6 +417,10 @@ input,textarea,select{font:inherit;color:inherit}
       <div class="panel-label"><span>3 · Kaunter bayaran</span></div>
       <div class="screen" id="counter"></div>
     </section>
+    <section class="panel p-menu demo-only" aria-label="Urus menu">
+      <div class="panel-label"><span>4 · Urus menu · owner / manager</span></div>
+      <div class="screen" id="manager"></div>
+    </section>
   </main>
 
   <section class="why demo-only" aria-label="Masalah yang diselesaikan">
@@ -361,13 +429,14 @@ input,textarea,select{font:inherit;color:inherit}
     <div><b>Kaunter tak lupa</b>Semua order tersimpan ikut meja. Di kaunter cuma sebut nombor meja, bil dah siap.</div>
   </section>
 </div>
+<div id="editor" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
 "use strict";
 /* ================= Data ================= */
 // Prices are in sen (integer) so totals never drift like 0.1 + 0.2
-const MENU = [
+const DEFAULT_MENU = [
   {id:"kerabu", cat:"Nasi", name:"Nasi Kerabu Ayam Bakar", desc:"Nasi biru, ulam, sambal kelapa, budu", price:900, e:"🍛", tag:"Laris"},
   {id:"dagang", cat:"Nasi", name:"Nasi Dagang Ikan Tongkol", desc:"Gulai tongkol, telur rebus, acar timun", price:850, e:"🍚"},
   {id:"tumpang", cat:"Nasi", name:"Nasi Tumpang", desc:"Bungkus kon daun pisang, 4 lapis lauk", price:500, e:"🍙"},
@@ -386,38 +455,60 @@ const MENU = [
   {id:"kelapa", cat:"Minuman", name:"Air Kelapa Muda", desc:"Sebiji kelapa", price:450, e:"🥥"},
   {id:"limau", cat:"Minuman", name:"Teh O Ais Limau", desc:"Ais", price:300, e:"🍋"},
 ];
-const CATS = [...new Set(MENU.map(m => m.cat))];
-const BY = Object.fromEntries(MENU.map(m => [m.id, m]));
 const STEP = {baru:1, masak:2, siap:3, hidang:3};
 const STATUS = {baru:"Diterima dapur", masak:"Sedang dimasak", siap:"Siap, dalam perjalanan", hidang:"Dah dihidang"};
-const STATE_VERSION = 3;
+const STATE_VERSION = 4;
 const MIN = 60000;
 
 const $ = id => document.getElementById(id);
 const esc = binaEsc;
 const rm = sen => "RM " + (sen / 100).toFixed(2);
 const no3 = n => "#" + String(n).padStart(3, "0");
-const sum = items => items.reduce((s, [id, q]) => s + (BY[id] ? BY[id].price * q : 0), 0);
+// An order line is [id, qty, name, price] - name and price are copied at order time,
+// so editing or deleting a dish later never changes a bill that already exists.
+const sum = items => items.reduce((s, it) => s + it[3] * it[1], 0);
 const ago = t => { const m = Math.floor((Date.now() - t) / MIN); return m < 1 ? "baru tadi" : m < 60 ? m + " min lalu" : Math.floor(m / 60) + " jam lalu"; };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
+/* ================= Menu (editable by owner / manager) ================= */
+let MENU = [], CATS = [], BY = {};
+function validMenu(m){
+  return Array.isArray(m) && m.every(x => x && typeof x.id === "string" && typeof x.name === "string" && typeof x.cat === "string" && Number.isInteger(x.price));
+}
+function setMenu(list){
+  MENU = list;
+  CATS = [...new Set(MENU.map(m => m.cat))];
+  BY = Object.fromEntries(MENU.map(m => [m.id, m]));
+}
+{ const saved = binaStore.get("bo.menu", null); setMenu(validMenu(saved) ? saved : DEFAULT_MENU.map(m => ({...m}))); }
+
+// Returns false when the browser has no room left (photos are the usual cause)
+function saveMenu(){
+  try { localStorage.setItem("bo.menu", JSON.stringify(MENU)); }
+  catch (e) { return false; }
+  try { bc && bc.postMessage({kind: "menu", menu: MENU}); } catch (e) {}
+  return true;
+}
+const line = (id, q) => [id, q, BY[id].name, BY[id].price];
+
 function seed(){
   const now = Date.now();
+  const mk = arr => arr.filter(([id]) => BY[id]).map(([id, q]) => line(id, q));
   return {
     v: STATE_VERSION, nextNo: 18, sales: 48650, bills: 31,
-    calls: [4], habis: ["itik"], lastPaid: {},
+    calls: [4], habis: BY.itik ? ["itik"] : [], lastPaid: {},
     history: [
       {table:3, total:2350, method:"DuitNow QR", t:now - 12*MIN},
       {table:8, total:1700, method:"Tunai", t:now - 27*MIN},
       {table:1, total:3150, method:"Tunai", t:now - 41*MIN},
     ],
     orders: [
-      {id:"s1", no:12, table:2, items:[["kerabu",2],["tarik",2]], note:"", status:"hidang", t:now-24*MIN, paid:false},
-      {id:"s2", no:15, table:2, items:[["akok",1]], note:"", status:"hidang", t:now-9*MIN, paid:false},
-      {id:"s3", no:14, table:4, items:[["dagang",3],["bandung",2],["kopio",1]], note:"", status:"hidang", t:now-18*MIN, paid:false},
-      {id:"s4", no:16, table:9, items:[["laksam",2],["solok",1],["limau",2]], note:"Laksam satu tak nak ulam", status:"masak", t:now-11*MIN, paid:false},
-      {id:"s5", no:17, table:11, items:[["berlauk",1],["percik",1],["kelapa",1]], note:"Kurang pedas", status:"baru", t:now-2*MIN, paid:false},
-    ]
+      {id:"s1", no:12, table:2, items:mk([["kerabu",2],["tarik",2]]), note:"", status:"hidang", t:now-24*MIN, paid:false},
+      {id:"s2", no:15, table:2, items:mk([["akok",1]]), note:"", status:"hidang", t:now-9*MIN, paid:false},
+      {id:"s3", no:14, table:4, items:mk([["dagang",3],["bandung",2],["kopio",1]]), note:"", status:"hidang", t:now-18*MIN, paid:false},
+      {id:"s4", no:16, table:9, items:mk([["laksam",2],["solok",1],["limau",2]]), note:"Laksam satu tak nak ulam", status:"masak", t:now-11*MIN, paid:false},
+      {id:"s5", no:17, table:11, items:mk([["berlauk",1],["percik",1],["kelapa",1]]), note:"Kurang pedas", status:"baru", t:now-2*MIN, paid:false},
+    ].filter(o => o.items.length)
   };
 }
 function validState(s){
@@ -425,32 +516,48 @@ function validState(s){
 }
 
 /* ================= State & sync ================= */
+let bc = null;
+try { bc = new BroadcastChannel("bina-order"); } catch (e) {}
+
 let S = binaStore.get("bo.state", null);
 if (!validState(S)) S = seed();
-// Drop anything that refers to dishes no longer on the menu
-S.orders.forEach(o => o.items = o.items.filter(([id]) => BY[id]));
+S.habis = S.habis.filter(id => BY[id]);
 
 const ui = {
   table: MEJA_OK ? MEJA : Math.min(7, CFG.tables),
   view: "menu", cat: "Semua", q: "", cart: {}, note: "", sheet: false, justSent: null,
-  sel: 2, method: "Tunai", stock: false, flash: null
+  sel: 2, method: "Tunai", stock: false, flash: null,
+  mcat: "Semua", edit: null, confirm: null
 };
 
-let bc = null;
-try { bc = new BroadcastChannel("bina-order"); } catch (e) {}
-function receive(next){
+function receiveState(next){
   if (!validState(next)) return;
   const fresh = next.orders.find(o => !S.orders.some(x => x.id === o.id));
   S = next;
   if (fresh) { ui.flash = fresh.id; beep(); }
   render();
 }
-if (bc) bc.onmessage = e => receive(e.data);
-window.addEventListener("storage", e => { if (e.key === "bo.state" && e.newValue) { try { receive(JSON.parse(e.newValue)); } catch (err) {} } });
+function receiveMenu(list){
+  if (!validMenu(list)) return;
+  setMenu(list);
+  Object.keys(ui.cart).forEach(id => { if (!BY[id]) delete ui.cart[id]; });
+  render();
+}
+if (bc) bc.onmessage = e => {
+  const d = e.data || {};
+  if (d.kind === "menu") receiveMenu(d.menu); else if (d.kind === "state") receiveState(d.state);
+};
+window.addEventListener("storage", e => {
+  if (!e.newValue) return;
+  try {
+    if (e.key === "bo.state") receiveState(JSON.parse(e.newValue));
+    if (e.key === "bo.menu") receiveMenu(JSON.parse(e.newValue));
+  } catch (err) {}
+});
 
 function commit(){
   binaStore.set("bo.state", S);
-  try { bc && bc.postMessage(S); } catch (e) {}
+  try { bc && bc.postMessage({kind: "state", state: S}); } catch (e) {}
   render();
 }
 function saveSettings(){ if (!SOLO) binaStore.set("bo.settings", CFG); }
@@ -472,6 +579,7 @@ let toastT;
 function toast(msg){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 2800); }
 const openOrders = tbl => S.orders.filter(o => o.table === tbl && !o.paid);
 const isOut = id => S.habis.includes(id);
+const tile = m => m.img ? `<img src="${m.img}" alt="">` : esc(m.e || "🍽️");
 function soloUrl(t){
   const u = new URL(location.pathname, location.origin);
   u.searchParams.set("meja", t); u.searchParams.set("kedai", CFG.shop); u.searchParams.set("tema", CFG.theme);
@@ -487,29 +595,31 @@ function placeOrder(table, items, note){
 }
 const ICON_SEARCH = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
 const ICON_CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+const ICON_PHOTO = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/></svg>';
 
 /* ================= Customer ================= */
 function menuHTML(){
   const q = ui.q.trim().toLowerCase();
-  const cats = ui.cat === "Semua" ? CATS : [ui.cat];
+  const cats = ui.cat === "Semua" || !CATS.includes(ui.cat) ? CATS : [ui.cat];
   let html = "", hits = 0;
   cats.forEach(c => {
-    const list = MENU.filter(m => m.cat === c && (!q || (m.name + " " + m.desc).toLowerCase().includes(q)));
+    const list = MENU.filter(m => m.cat === c && (!q || (m.name + " " + (m.desc || "")).toLowerCase().includes(q)));
     if (!list.length) return;
     hits += list.length;
-    html += `<h3 class="cat-h">${c}</h3><div class="items">`;
+    html += `<h3 class="cat-h">${esc(c)}</h3><div class="items">`;
     list.forEach(m => {
       const qn = ui.cart[m.id] || 0, out = isOut(m.id);
       html += `<div class="item${out ? " is-out" : ""}">
-        <div class="tile" aria-hidden="true">${m.e}</div>
-        <div class="info"><h4>${m.tag && !out ? `<span class="tag">${m.tag}</span>` : ""}${m.name}</h4><p>${m.desc}</p><div class="price">${rm(m.price)}</div></div>
+        <div class="tile${m.img ? " has-img" : ""}" aria-hidden="true">${tile(m)}</div>
+        <div class="info"><h4>${m.tag && !out ? `<span class="tag">${esc(m.tag)}</span>` : ""}${esc(m.name)}</h4>${m.desc ? `<p>${esc(m.desc)}</p>` : ""}<div class="price">${rm(m.price)}</div></div>
         <div class="step">${out ? `<span class="out">Habis</span>` :
-          (qn ? `<button type="button" data-dec="${m.id}" aria-label="Kurang ${m.name}">−</button><span class="num" aria-label="${qn} dipilih">${qn}</span>` : "") +
-          `<button type="button" class="add" data-inc="${m.id}" aria-label="Tambah ${m.name}">+</button>`}</div>
+          (qn ? `<button type="button" data-dec="${m.id}" aria-label="Kurang ${esc(m.name)}">−</button><span class="num" aria-label="${qn} dipilih">${qn}</span>` : "") +
+          `<button type="button" class="add" data-inc="${m.id}" aria-label="Tambah ${esc(m.name)}">+</button>`}</div>
       </div>`;
     });
     html += `</div>`;
   });
+  if (!MENU.length) return `<p class="nores">Menu belum ada. Tambah menu di skrin Urus Menu.</p>`;
   return hits ? html : `<p class="nores">Tiada menu sepadan dengan “${esc(ui.q)}”.</p>`;
 }
 
@@ -525,8 +635,8 @@ function renderCustomer(){
   }
 
   const mine = openOrders(ui.table).sort((a, b) => a.t - b.t);
-  const cart = Object.entries(ui.cart).filter(([id, q]) => q > 0 && BY[id]);
-  const cartQty = cart.reduce((s, [, q]) => s + q, 0);
+  const cart = Object.entries(ui.cart).filter(([id, q]) => q > 0 && BY[id]).map(([id, q]) => line(id, q));
+  const cartQty = cart.reduce((s, it) => s + it[1], 0);
   const billTotal = mine.reduce((s, o) => s + sum(o.items), 0);
   const calling = S.calls.includes(ui.table);
   const pill = `<div class="table-pill"><small>Meja</small><b>${ui.table}</b></div>`;
@@ -535,7 +645,7 @@ function renderCustomer(){
   if (ui.view === "menu"){
     body = `<div class="ph-tools">
         <div class="search">${ICON_SEARCH}<label class="sr" for="q">Cari menu</label><input id="q" type="search" placeholder="Cari menu" value="${esc(ui.q)}" autocomplete="off"></div>
-        <div class="cats">${["Semua", ...CATS].map(c => `<button type="button" data-cat="${c}" aria-pressed="${ui.cat === c}">${c}</button>`).join("")}</div>
+        <div class="cats">${["Semua", ...CATS].map(c => `<button type="button" data-cat="${esc(c)}" aria-pressed="${ui.cat === c}">${esc(c)}</button>`).join("")}</div>
       </div><div class="menu" id="menulist">${menuHTML()}</div>`;
   } else {
     body = `<div class="mine">`;
@@ -556,7 +666,7 @@ function renderCustomer(){
           <div class="round-h"><span>Pesanan ${i + 1} · <b>${no3(o.no)}</b> · ${ago(o.t)}</span></div>
           <div class="progress" aria-hidden="true">${[1,2,3].map(n => `<i class="${n < st || o.status === "hidang" ? "on" : n === st ? "now" : ""}"></i>`).join("")}</div>
           <div class="stlabel">${STATUS[o.status]}</div>
-          ${o.items.map(([id, q]) => `<div class="line"><span><span class="q">${q}×</span>${BY[id].name}</span><span class="amt">${rm(BY[id].price * q)}</span></div>`).join("")}
+          ${o.items.map(it => `<div class="line"><span><span class="q">${it[1]}×</span>${esc(it[2])}</span><span class="amt">${rm(it[3] * it[1])}</span></div>`).join("")}
           ${o.note ? `<div class="tnote">Nota: ${esc(o.note)}</div>` : ""}
         </div>`;
       });
@@ -579,8 +689,8 @@ function renderCustomer(){
       <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-h">
         <div class="sheet-h"><h3 class="disp" id="sheet-h" tabindex="-1">Semak pesanan</h3><button type="button" class="x" data-close aria-label="Tutup">✕</button></div>
         <div class="sheet-body">
-          ${cart.map(([id, q]) => `<div class="rline"><div><div class="nm">${BY[id].name}</div><div class="sub">${rm(BY[id].price)} × ${q} = ${rm(BY[id].price * q)}</div></div>
-            <div class="step"><button type="button" data-dec="${id}" aria-label="Kurang ${BY[id].name}">−</button><span class="num">${q}</span><button type="button" class="add" data-inc="${id}" aria-label="Tambah ${BY[id].name}">+</button></div></div>`).join("")}
+          ${cart.map(([id, q, name, price]) => `<div class="rline"><div><div class="nm">${esc(name)}</div><div class="sub">${rm(price)} × ${q} = ${rm(price * q)}</div></div>
+            <div class="step"><button type="button" data-dec="${id}" aria-label="Kurang ${esc(name)}">−</button><span class="num">${q}</span><button type="button" class="add" data-inc="${id}" aria-label="Tambah ${esc(name)}">+</button></div></div>`).join("")}
           <label class="lbl" for="note">Nota untuk dapur</label>
           <textarea class="note" id="note" rows="2" maxlength="120" placeholder="Contoh: kurang pedas, air kurang manis">${esc(ui.note)}</textarea>
         </div>
@@ -592,11 +702,10 @@ function renderCustomer(){
       </div>`;
   }
 
-  const mineCount = mine.length;
   el.innerHTML = head(pill) + `
     <div class="ph-tabs" role="tablist" aria-label="Menu atau pesanan">
       <button type="button" role="tab" data-view="menu" aria-selected="${ui.view === "menu"}">Menu</button>
-      <button type="button" role="tab" data-view="mine" aria-selected="${ui.view === "mine"}">Pesanan saya${mineCount ? `<span class="count">${mineCount}</span>` : ""}</button>
+      <button type="button" role="tab" data-view="mine" aria-selected="${ui.view === "mine"}">Pesanan saya${mine.length ? `<span class="count">${mine.length}</span>` : ""}</button>
     </div>
     <div class="ph-body" id="phbody">${body}</div>
     <div class="cartbar">${foot}</div>${sheet}`;
@@ -607,7 +716,7 @@ function renderKitchen(){
   // Served = done. Paid-but-not-served orders stay on screen so food is never forgotten.
   const active = S.orders.filter(o => o.status !== "hidang").sort((a, b) => a.t - b.t);
   const prep = {};
-  active.filter(o => o.status !== "siap").forEach(o => o.items.forEach(([id, q]) => prep[id] = (prep[id] || 0) + q));
+  active.filter(o => o.status !== "siap").forEach(o => o.items.forEach(it => prep[it[2]] = (prep[it[2]] || 0) + it[1]));
   const prepList = Object.entries(prep).sort((a, b) => b[1] - a[1]);
 
   const col = (st, label, btn, next) => {
@@ -618,7 +727,7 @@ function renderKitchen(){
         const cls = mins >= 15 ? "late" : mins >= 10 ? "slow" : "";
         return `<div class="ticket ${st}${ui.flash === o.id ? " flash" : ""}">
           <div class="t-h"><b>Meja ${o.table}</b><span class="${cls}">${no3(o.no)} · ${ago(o.t)}</span></div>
-          <div class="t-items">${o.items.map(([id, q]) => `<div><span class="q">${q}×</span>${BY[id].name}</div>`).join("")}</div>
+          <div class="t-items">${o.items.map(it => `<div><span class="q">${it[1]}×</span>${esc(it[2])}</div>`).join("")}</div>
           ${o.note ? `<div class="tnote">${esc(o.note)}</div>` : ""}
           ${o.paid ? `<div class="t-paid">Bil dah dibayar</div>` : ""}
           <button type="button" class="t-btn" data-adv="${o.id}" data-next="${next}">${btn}</button></div>`;
@@ -629,8 +738,8 @@ function renderKitchen(){
     <div class="screen-h"><h2 class="disp">Dapur</h2>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="meta num">${active.length} order aktif</span>
       <button type="button" class="toggle" id="stocktoggle" aria-pressed="${ui.stock}">Stok habis${S.habis.length ? ` (${S.habis.length})` : ""}</button></div></div>
-    ${ui.stock ? `<div class="stock" aria-label="Tanda menu yang habis">${MENU.map(m => `<button type="button" data-out="${m.id}" aria-pressed="${isOut(m.id)}"><span>${m.name}</span><em>${isOut(m.id) ? "Habis" : "Ada"}</em></button>`).join("")}</div>` : ""}
-    ${prepList.length ? `<div class="prep"><span class="lbl">Perlu disediakan</span>${prepList.map(([id, q]) => `<span class="p"><b>${q}×</b>${BY[id].name}</span>`).join("")}</div>` : ""}
+    ${ui.stock ? `<div class="stock" aria-label="Tanda menu yang habis">${MENU.map(m => `<button type="button" data-out="${m.id}" aria-pressed="${isOut(m.id)}"><span>${esc(m.name)}</span><em>${isOut(m.id) ? "Habis" : "Ada"}</em></button>`).join("")}</div>` : ""}
+    ${prepList.length ? `<div class="prep"><span class="lbl">Perlu disediakan</span>${prepList.map(([n, q]) => `<span class="p"><b>${q}×</b>${esc(n)}</span>`).join("")}</div>` : ""}
     <div class="kcols">${col("baru", "Order baru", "Mula masak", "masak")}${col("masak", "Sedang dimasak", "Siap", "siap")}${col("siap", "Siap dihidang", "Dah hantar ke meja", "hidang")}</div>`;
 }
 
@@ -651,14 +760,19 @@ function renderCounter(){
     receipt = `<div class="receipt"><div class="rc-h"><div><h3 class="disp">Meja ${ui.sel}</h3><p>Tiada bil terbuka</p></div></div>
       <p class="muted">Pilih meja yang berwarna untuk lihat bil.</p></div>`;
   } else {
-    const agg = {};
-    os.forEach(o => o.items.forEach(([id, q]) => agg[id] = (agg[id] || 0) + q));
-    const lines = Object.entries(agg), amt = sum(lines);
-    const pending = os.filter(o => o.status !== "hidang").reduce((s, o) => s + o.items.reduce((a, [, q]) => a + q, 0), 0);
+    // Group by name + price, so the same dish ordered before and after a price change shows as two lines
+    const agg = new Map();
+    os.forEach(o => o.items.forEach(([, q, name, price]) => {
+      const k = name + "|" + price, cur = agg.get(k);
+      agg.set(k, cur ? [cur[0] + q, name, price] : [q, name, price]);
+    }));
+    const lines = [...agg.values()];
+    const amt = lines.reduce((s, [q, , p]) => s + q * p, 0);
+    const pending = os.filter(o => o.status !== "hidang").reduce((s, o) => s + o.items.reduce((a, it) => a + it[1], 0), 0);
     receipt = `<div class="receipt">
       <div class="rc-h"><div><h3 class="disp">Bil Meja ${ui.sel}</h3><p>${os.length} pusingan order · mula ${ago(os[0].t)}</p></div><span class="muted">${os.map(o => no3(o.no)).join(", ")}</span></div>
       ${pending ? `<div class="rc-warn">${pending} item belum dihidang</div>` : ""}
-      <div class="rc-lines">${lines.map(([id, q]) => `<div class="line"><span><span class="q">${q}×</span>${BY[id].name}</span><span class="amt">${rm(BY[id].price * q)}</span></div>`).join("")}</div>
+      <div class="rc-lines">${lines.map(([q, name, price]) => `<div class="line"><span><span class="q">${q}×</span>${esc(name)}</span><span class="amt">${rm(price * q)}</span></div>`).join("")}</div>
       <div class="rc-tot"><span>Jumlah</span><span class="mono">${rm(amt)}</span></div>
       <div class="pay" role="group" aria-label="Cara bayaran">${["Tunai", "DuitNow QR", "Kad"].map(m => `<button type="button" data-method="${m}" aria-pressed="${ui.method === m}">${m}</button>`).join("")}</div>
       <button type="button" class="cta" id="paid"><span>Terima bayaran · ${ui.method}</span><span class="mono">${rm(amt)}</span></button></div>`;
@@ -676,6 +790,193 @@ function renderCounter(){
     <div class="tables">${grid}</div>
     ${receipt}
     ${S.history.length ? `<div><div class="lbl" style="margin-bottom:4px">Bil terakhir</div><div class="hist">${S.history.slice(0, 4).map(h => `<div><span>Meja ${h.table} · ${h.method} · ${ago(h.t)}</span><span class="mono">${rm(h.total)}</span></div>`).join("")}</div></div>` : ""}`;
+}
+
+/* ================= Menu manager (owner / manager) ================= */
+function renderManager(){
+  const cats = ["Semua", ...CATS];
+  if (!cats.includes(ui.mcat)) ui.mcat = "Semua";
+  const shown = ui.mcat === "Semua" ? CATS : [ui.mcat];
+  const photos = MENU.filter(m => m.img).length;
+  let rows = "";
+  shown.forEach(c => {
+    const list = MENU.filter(m => m.cat === c);
+    const ci = CATS.indexOf(c);
+    rows += `<div class="mg-cat"><div class="mg-cat-h"><span class="disp">${esc(c)}</span><span class="muted">${list.length} menu</span>
+      <span class="mg-move">
+        <button type="button" class="icon-btn" data-catmove="${ci}" data-dir="-1" aria-label="Naikkan kategori ${esc(c)}" ${ci === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" class="icon-btn" data-catmove="${ci}" data-dir="1" aria-label="Turunkan kategori ${esc(c)}" ${ci === CATS.length - 1 ? "disabled" : ""}>↓</button>
+      </span></div>`;
+    list.forEach((m, i) => {
+      rows += `<div class="mg-row${isOut(m.id) ? " is-out" : ""}">
+        <div class="mg-thumb${m.img ? " has-img" : ""}" aria-hidden="true">${tile(m)}</div>
+        <div class="mg-info"><b>${esc(m.name)}</b><span>${m.tag ? `<em>${esc(m.tag)}</em> · ` : ""}${m.img ? "Ada gambar" : "Tiada gambar"}${isOut(m.id) ? " · Habis" : ""}</span></div>
+        <span class="mono mg-price">${rm(m.price)}</span>
+        <span class="mg-move">
+          <button type="button" class="icon-btn" data-move="${m.id}" data-dir="-1" aria-label="Naikkan ${esc(m.name)}" ${i === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" class="icon-btn" data-move="${m.id}" data-dir="1" aria-label="Turunkan ${esc(m.name)}" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
+        </span>
+        <button type="button" class="chip-btn" data-edit="${m.id}">Edit</button>
+      </div>`;
+    });
+    rows += `</div>`;
+  });
+
+  $("manager").innerHTML = `
+    <div class="screen-h"><h2 class="disp">Urus Menu</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="chip-btn" id="restore">${ui.confirm === "restore" ? "Tekan lagi untuk pulihkan" : "Pulihkan menu asal"}</button>
+        <button type="button" class="chip-btn primary" data-edit="new">+ Tambah menu</button>
+      </div></div>
+    <p class="muted">${MENU.length} menu · ${CATS.length} kategori · ${photos} gambar. Perubahan terus nampak di telefon pelanggan.</p>
+    <div class="cats mg-cats">${cats.map(c => `<button type="button" data-mcat="${esc(c)}" aria-pressed="${ui.mcat === c}">${esc(c)}</button>`).join("")}</div>
+    <div class="mg-list">${rows || `<p class="nores">Belum ada menu. Tekan "+ Tambah menu" untuk mula.</p>`}</div>`;
+}
+
+function renderEditor(anim){
+  const host = $("editor");
+  if (!ui.edit){ host.hidden = true; host.innerHTML = ""; return; }
+  const d = ui.edit;
+  const catOpts = [...CATS];
+  if (d.cat && !catOpts.includes(d.cat)) catOpts.push(d.cat);
+  host.hidden = false;
+  host.innerHTML = `<div class="ed-bg${anim ? " anim" : ""}" data-edclose></div>
+    <div class="ed${anim ? " anim" : ""}" role="dialog" aria-modal="true" aria-labelledby="ed-h">
+      <div class="sheet-h"><h3 class="disp" id="ed-h" tabindex="-1">${d.id ? "Edit menu" : "Tambah menu"}</h3><button type="button" class="x" data-edclose aria-label="Tutup">✕</button></div>
+      <form class="ed-body" id="edform" novalidate>
+        <div class="ed-photo">
+          <div class="ed-prev${d.img ? " has-img" : ""}" id="ed-prev">${d.img ? `<img src="${d.img}" alt="Gambar ${esc(d.name || "menu")}">` : `<span class="ed-emoji">${esc(d.e || "🍽️")}</span>`}</div>
+          <div class="ed-photo-act">
+            <label class="chip-btn primary file-btn" for="ed-file">${ICON_PHOTO}<span>${d.img ? "Tukar gambar" : "Pilih gambar"}</span></label>
+            <input type="file" id="ed-file" accept="image/*" class="sr">
+            ${d.img ? `<button type="button" class="chip-btn" id="ed-rmimg">Buang gambar</button>` : ""}
+            <p class="muted">Ambil gambar dari telefon atau galeri. Gambar dipotong 4:3 dan dikecilkan secara automatik.</p>
+          </div>
+        </div>
+        <div class="ed-grid">
+          <div class="field span2"><label for="ed-name">Nama menu</label><input id="ed-name" maxlength="40" value="${esc(d.name || "")}" required autocomplete="off"></div>
+          <div class="field span2"><label for="ed-desc">Penerangan <span class="opt">pilihan</span></label><input id="ed-desc" maxlength="80" value="${esc(d.desc || "")}" autocomplete="off" placeholder="Contoh: Gulai daging, sayur, sambal"></div>
+          <div class="field"><label for="ed-price">Harga (RM)</label><input id="ed-price" type="number" inputmode="decimal" min="0.10" max="9999" step="0.10" value="${d.price != null ? (d.price / 100).toFixed(2) : ""}" placeholder="0.00"></div>
+          <div class="field"><label for="ed-emoji">Emoji <span class="opt">jika tiada gambar</span></label><input id="ed-emoji" maxlength="4" value="${esc(d.e || "")}" placeholder="🍽️"></div>
+          <div class="field"><label for="ed-cat">Kategori</label>
+            <select id="ed-cat">${catOpts.map(c => `<option value="${esc(c)}"${c === d.cat ? " selected" : ""}>${esc(c)}</option>`).join("")}<option value="__new"${d.newCat != null ? " selected" : ""}>+ Kategori baru…</option></select></div>
+          <div class="field" id="ed-newcat-wrap"${d.newCat != null ? "" : " hidden"}><label for="ed-newcat">Nama kategori baru</label><input id="ed-newcat" maxlength="20" value="${esc(d.newCat || "")}" placeholder="Contoh: Mee"></div>
+          <label class="check span2"><input type="checkbox" id="ed-tag"${d.tag ? " checked" : ""}><span>Tanda sebagai <b>Laris</b></span></label>
+          <label class="check span2"><input type="checkbox" id="ed-out"${d.out ? " checked" : ""}><span>Stok habis (pelanggan tak boleh order)</span></label>
+        </div>
+        <p class="ed-err" id="ed-err" role="alert" hidden></p>
+      </form>
+      <div class="sheet-foot ed-foot">
+        ${d.id ? `<button type="button" class="chip-btn danger" id="ed-del">${ui.confirm === "del" ? "Tekan lagi untuk padam" : "Padam"}</button>` : "<span></span>"}
+        <div style="display:flex;gap:8px"><button type="button" class="chip-btn" data-edclose>Batal</button><button type="button" class="chip-btn primary" id="ed-save">Simpan</button></div>
+      </div>
+    </div>`;
+}
+
+// Keep what was typed when the editor redraws (e.g. after choosing a photo)
+function readEditor(){
+  const d = ui.edit; if (!d || !$("ed-name")) return;
+  d.name = $("ed-name").value; d.desc = $("ed-desc").value; d.e = $("ed-emoji").value;
+  const p = parseFloat($("ed-price").value); d.price = isFinite(p) ? Math.round(p * 100) : null;
+  const c = $("ed-cat").value;
+  if (c === "__new"){ d.newCat = $("ed-newcat").value; } else { d.cat = c; d.newCat = null; }
+  d.tag = $("ed-tag").checked ? "Laris" : ""; d.out = $("ed-out").checked;
+}
+
+function openEditor(id){
+  ui.confirm = null;
+  if (id === "new"){
+    const cat = ui.mcat !== "Semua" ? ui.mcat : (CATS[0] || "Menu");
+    ui.edit = {id: null, name: "", desc: "", price: null, e: "", cat, newCat: CATS.length ? null : "", tag: "", out: false, img: ""};
+  } else {
+    const m = BY[id]; if (!m) return;
+    ui.edit = {id: m.id, name: m.name, desc: m.desc || "", price: m.price, e: m.e || "", cat: m.cat, newCat: null, tag: m.tag || "", out: isOut(m.id), img: m.img || ""};
+  }
+  renderEditor(true);
+  const h = $("ed-h"); if (h) h.focus();
+}
+function closeEditor(){ ui.edit = null; ui.confirm = null; renderEditor(); }
+
+function saveEditor(){
+  readEditor();
+  const d = ui.edit, err = $("ed-err");
+  const name = d.name.trim(), cat = (d.newCat != null ? d.newCat : d.cat || "").trim();
+  const problem = !name ? "Isi nama menu." :
+    d.price == null || d.price < 10 || d.price > 999900 ? "Isi harga antara RM 0.10 dan RM 9999." :
+    !cat ? "Isi nama kategori baru." :
+    MENU.some(m => m.id !== d.id && m.name.toLowerCase() === name.toLowerCase()) ? "Nama ini dah ada dalam menu. Guna nama lain." : "";
+  if (problem){ err.textContent = problem; err.hidden = false; return; }
+
+  const item = {id: d.id || "m" + uid(), cat, name, desc: d.desc.trim(), price: d.price, e: d.e.trim() || "🍽️"};
+  if (d.tag) item.tag = d.tag;
+  if (d.img) item.img = d.img;
+  const before = MENU;
+  const next = d.id ? MENU.map(m => m.id === d.id ? item : m) : [...MENU, item];
+  // Keep categories together in the order they first appear
+  const order = [...new Set(next.map(m => m.cat))];
+  setMenu(order.flatMap(c => next.filter(m => m.cat === c)));
+  if (!saveMenu()){
+    setMenu(before);
+    err.textContent = "Storan browser dah penuh. Buang gambar menu lain atau guna gambar lebih kecil.";
+    err.hidden = false; return;
+  }
+  const wasOut = isOut(item.id);
+  if (d.out && !wasOut) S.habis.push(item.id);
+  if (!d.out && wasOut) S.habis = S.habis.filter(x => x !== item.id);
+  if (d.out) delete ui.cart[item.id];
+  closeEditor();
+  toast(d.id ? `${name} dikemas kini` : `${name} ditambah ke menu`);
+  commit();
+}
+
+function deleteItem(){
+  const d = ui.edit; if (!d || !d.id) return;
+  if (ui.confirm !== "del"){ readEditor(); ui.confirm = "del"; renderEditor(); return; }
+  const name = BY[d.id] ? BY[d.id].name : "Menu";
+  setMenu(MENU.filter(m => m.id !== d.id));
+  saveMenu();
+  S.habis = S.habis.filter(x => x !== d.id);
+  delete ui.cart[d.id];
+  closeEditor();
+  toast(`${name} dipadam. Bil yang sedia ada tidak berubah.`);
+  commit();
+}
+
+function moveItem(id, dir){
+  const m = BY[id]; if (!m) return;
+  const same = MENU.filter(x => x.cat === m.cat);
+  const i = same.indexOf(m), j = i + dir;
+  if (j < 0 || j >= same.length) return;
+  [same[i], same[j]] = [same[j], same[i]];
+  setMenu(CATS.flatMap(c => c === m.cat ? same : MENU.filter(x => x.cat === c)));
+  saveMenu(); render();
+}
+function moveCat(i, dir){
+  const j = i + dir; if (j < 0 || j >= CATS.length) return;
+  const cats = [...CATS]; [cats[i], cats[j]] = [cats[j], cats[i]];
+  setMenu(cats.flatMap(c => MENU.filter(x => x.cat === c)));
+  saveMenu(); render();
+}
+
+// Centre-crop to 4:3 and shrink to 640x480 JPEG (about 40-80 KB) so many photos fit in browser storage
+function processPhoto(file){
+  return new Promise((resolve, reject) => {
+    if (!file || !/^image\//.test(file.type)) return reject(new Error("Fail ini bukan gambar."));
+    if (file.size > 15 * 1024 * 1024) return reject(new Error("Gambar terlalu besar (had 15 MB)."));
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const W = 640, H = 480, r = W / H;
+      let sw = img.naturalWidth, sh = img.naturalHeight, sx = 0, sy = 0;
+      if (sw / sh > r){ const nw = sh * r; sx = (sw - nw) / 2; sw = nw; } else { const nh = sw / r; sy = (sh - nh) / 2; sh = nh; }
+      const c = document.createElement("canvas"); c.width = W; c.height = H;
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, W, H);
+      g.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg", .78));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Gambar tak dapat dibuka. Cuba format JPG atau PNG.")); };
+    img.src = url;
+  });
 }
 
 /* ================= Setup (template picker) ================= */
@@ -696,7 +997,7 @@ function render(){
   const pb = $("phbody"), scroll = pb ? pb.scrollTop : 0;
   const focusId = document.activeElement && document.activeElement.id;
   renderCustomer();
-  if (!SOLO){ renderKitchen(); renderCounter(); }
+  if (!SOLO){ renderKitchen(); renderCounter(); renderManager(); }
   const npb = $("phbody"); if (npb && ui.view === "menu") npb.scrollTop = scroll;
   if (focusId === "note" && $("note")){ const n = $("note"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }
   const fresh = S.orders.filter(o => o.status === "baru").length;
@@ -712,20 +1013,26 @@ function setShow(show){
 }
 
 document.addEventListener("click", e => {
-  const b = e.target.closest("button, [data-close]"); if (!b) return;
+  const b = e.target.closest("button, [data-close], [data-edclose]"); if (!b) return;
   const d = b.dataset;
   if (d.show) return setShow(d.show);
   if (d.themeKey){ CFG.theme = d.themeKey; binaApplyTheme(CFG.theme); saveSettings(); renderSetup(); render(); toast(`Template: ${BINA_THEMES[CFG.theme].name}`); return; }
+  if (d.edclose !== undefined) return closeEditor();
   if (d.close !== undefined){ ui.sheet = false; render(); return; }
   if (d.cat){ ui.cat = d.cat; render(); const pb = $("phbody"); if (pb) pb.scrollTop = 0; return; }
   if (d.view){ ui.view = d.view; if (d.view === "menu") ui.justSent = null; render(); return; }
-  if (d.inc){ if (isOut(d.inc)) return; ui.cart[d.inc] = (ui.cart[d.inc] || 0) + 1; render(); return; }
+  if (d.inc){ if (isOut(d.inc) || !BY[d.inc]) return; ui.cart[d.inc] = (ui.cart[d.inc] || 0) + 1; render(); return; }
   if (d.dec){ ui.cart[d.dec] = Math.max(0, (ui.cart[d.dec] || 0) - 1); if (!ui.cart[d.dec]) delete ui.cart[d.dec]; if (!Object.keys(ui.cart).length) ui.sheet = false; render(); return; }
+  if (d.edit) return openEditor(d.edit);
+  if (d.mcat){ ui.mcat = d.mcat; renderManager(); return; }
+  if (d.move) return moveItem(d.move, +d.dir);
+  if (d.catmove) return moveCat(+d.catmove, +d.dir);
+  if (b.id !== "restore" && ui.confirm === "restore"){ ui.confirm = null; renderManager(); }
   switch (b.id){
-    case "opencart": ui.sheet = true; render(); const h = $("sheet-h"); if (h) h.focus(); return;
+    case "opencart": { ui.sheet = true; render(); const h = $("sheet-h"); if (h) h.focus(); return; }
     case "send": {
-      const items = Object.entries(ui.cart).filter(([id, q]) => q > 0 && BY[id] && !isOut(id));
-      const dropped = Object.keys(ui.cart).filter(id => isOut(id));
+      const items = Object.entries(ui.cart).filter(([id, q]) => q > 0 && BY[id] && !isOut(id)).map(([id, q]) => line(id, q));
+      const dropped = Object.keys(ui.cart).filter(id => isOut(id) || !BY[id]);
       if (!items.length){ toast("Item dalam troli dah habis. Sila pilih menu lain."); ui.cart = {}; ui.sheet = false; render(); return; }
       const o = placeOrder(ui.table, items, ui.note.trim().slice(0, 120));
       ui.cart = {}; ui.note = ""; ui.sheet = false; ui.view = "mine"; ui.justSent = o.no;
@@ -755,19 +1062,31 @@ document.addEventListener("click", e => {
       const pool = free.length ? free : Array.from({length: CFG.tables}, (_, i) => i + 1);
       const t = pool[Math.floor(Math.random() * pool.length)];
       const avail = MENU.filter(m => !isOut(m.id));
-      const mains = avail.filter(m => m.cat !== "Minuman"), drinks = avail.filter(m => m.cat === "Minuman");
+      if (!avail.length) return toast("Tiada menu yang ada stok. Semak 'Stok habis' di dapur.");
+      const drinks = avail.filter(m => /minum|air|drink/i.test(m.cat)), mains = avail.filter(m => !drinks.includes(m));
       const pick = a => a[Math.floor(Math.random() * a.length)].id;
-      const items = [];
-      if (mains.length) items.push([pick(mains), 1 + Math.floor(Math.random() * 2)]);
-      if (drinks.length) items.push([pick(drinks), 1 + Math.floor(Math.random() * 2)]);
-      if (!items.length) return toast("Semua menu habis. Buka 'Stok habis' di dapur.");
+      const ids = new Set();
+      if (mains.length) ids.add(pick(mains));
+      if (drinks.length) ids.add(pick(drinks));
+      if (!ids.size) ids.add(pick(avail));
+      const items = [...ids].map(id => line(id, 1 + Math.floor(Math.random() * 2)));
       const o = placeOrder(t, items, Math.random() < .35 ? "Air kurang manis" : "");
       toast(`Order baru dari Meja ${t} (${no3(o.no)})`);
       commit(); return;
     }
     case "btn-reset":
       S = seed(); Object.assign(ui, {table: Math.min(7, CFG.tables), view: "menu", cat: "Semua", q: "", cart: {}, note: "", sheet: false, justSent: null, sel: 2, method: "Tunai", stock: false});
-      toast("Demo dimulakan semula"); commit(); return;
+      toast("Order dan jualan demo dimulakan semula. Menu tidak diubah."); commit(); return;
+    case "restore":
+      if (ui.confirm !== "restore"){ ui.confirm = "restore"; renderManager(); return; }
+      ui.confirm = null;
+      setMenu(DEFAULT_MENU.map(m => ({...m}))); saveMenu();
+      S.habis = S.habis.filter(id => BY[id]);
+      Object.keys(ui.cart).forEach(id => { if (!BY[id]) delete ui.cart[id]; });
+      toast("Menu asal dipulihkan"); commit(); return;
+    case "ed-save": return saveEditor();
+    case "ed-del": return deleteItem();
+    case "ed-rmimg": readEditor(); ui.edit.img = ""; renderEditor(); return;
   }
   if (d.adv){
     const o = S.orders.find(x => x.id === d.adv); if (!o) return;
@@ -786,8 +1105,9 @@ document.addEventListener("input", e => {
   if (t.id === "note") ui.note = t.value;
   if (t.id === "q"){ ui.q = t.value; $("menulist").innerHTML = menuHTML(); }
   if (t.id === "f-shop"){ CFG.shop = t.value.slice(0, 40) || "Nama Kedai"; saveSettings(); render(); }
+  if (t.id && t.id.startsWith("ed-") && ui.edit){ const err = $("ed-err"); if (err) err.hidden = true; }
 });
-document.addEventListener("change", e => {
+document.addEventListener("change", async e => {
   const t = e.target;
   if (t.id === "simtable"){ ui.table = +t.value; ui.cart = {}; ui.note = ""; ui.sheet = false; ui.justSent = null; ui.view = openOrders(ui.table).length ? "mine" : "menu"; render(); }
   if (t.id === "f-tables"){
@@ -797,14 +1117,26 @@ document.addEventListener("change", e => {
     if (ui.sel > n) ui.sel = 1;
     saveSettings(); render();
   }
+  if (t.id === "ed-cat"){ const w = $("ed-newcat-wrap"); w.hidden = t.value !== "__new"; if (!w.hidden) $("ed-newcat").focus(); }
+  if (t.id === "ed-file" && t.files && t.files[0]){
+    readEditor();
+    const prev = $("ed-prev"); if (prev) prev.classList.add("loading");
+    try { ui.edit.img = await processPhoto(t.files[0]); renderEditor(); }
+    catch (err) { if (prev) prev.classList.remove("loading"); const el = $("ed-err"); el.textContent = err.message; el.hidden = false; }
+  }
 });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && ui.sheet){ ui.sheet = false; render(); } });
+document.addEventListener("submit", e => { if (e.target.id === "edform"){ e.preventDefault(); saveEditor(); } });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (ui.edit) return closeEditor();
+  if (ui.sheet){ ui.sheet = false; render(); }
+});
 
 if (SOLO && MEJA_OK) document.title = `Meja ${MEJA} · ${CFG.shop}`;
 if (!SOLO) renderSetup();
 render();
-// Refresh "x min lalu" labels, but never while someone is typing
-setInterval(() => { const a = document.activeElement; if (!a || !/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) render(); }, 20000);
+// Refresh "x min lalu" labels, but never while someone is typing or editing
+setInterval(() => { const a = document.activeElement; if (ui.edit || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return; render(); }, 20000);
 </script>
 </body>
 </html>
