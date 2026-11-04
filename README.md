@@ -10,7 +10,7 @@ Pelanggan scan QR di meja, order sendiri dari telefon, dan bayar di kaunter sele
 - **Pelanggan tak selesa staf tunggu depan meja.** Pelanggan pilih menu ikut masa sendiri.
 - **Kaunter lupa apa pelanggan makan.** Semua order disimpan ikut nombor meja, jadi bil dah siap di kaunter.
 
-## Tiga skrin
+## Empat skrin
 
 1. **Pelanggan**: carian menu, kategori, semak pesanan sebelum hantar, nota untuk dapur, status setiap order, kad bil, panggil staf, terima kasih dan review.
 2. **Dapur**: order baru, sedang dimasak, siap dihidang, senarai "perlu disediakan", tanda stok habis.
