@@ -12,23 +12,33 @@ Pelanggan scan QR di meja, order sendiri dari telefon, dan bayar di kaunter sele
 
 ## Tiga skrin
 
-1. **Pelanggan**: menu, nota untuk dapur, status pesanan, tambah pesanan, panggil staf.
-2. **Dapur**: order baru, sedang dimasak, siap dihidang.
-3. **Kaunter**: grid meja, bil penuh ikut meja, terima bayaran (Tunai / DuitNow QR / Kad), jualan hari ini.
+1. **Pelanggan**: carian menu, kategori, semak pesanan sebelum hantar, nota untuk dapur, status setiap order, kad bil, panggil staf, terima kasih dan review.
+2. **Dapur**: order baru, sedang dimasak, siap dihidang, senarai "perlu disediakan", tanda stok habis.
+3. **Kaunter**: grid meja, bil penuh ikut meja, amaran panggil staf, terima bayaran (Tunai / DuitNow QR / Kad), jualan hari ini, bil terakhir.
+
+## Template UI
+
+Pilih di bahagian atas demo. Ada 5 pilihan: **Bina Klasik**, **Kopitiam**, **Warisan Kelantan**, **Kafe Moden** dan **Gerai Malam**.
+
+Template ditetapkan dalam `assets/shared.js` (`BINA_THEMES`). Untuk tambah template baru, salin satu entri dan tukar warna, font serta `layout` (`list` atau `grid`).
 
 ## Link ikut meja & QR
 
-- `/?meja=7` buka skrin pelanggan sahaja, terus untuk Meja 7 (macam bila pelanggan scan QR di meja).
-- `/qr.html` ialah page cetak QR: masukkan nama kedai dan bilangan meja, kemudian cetak atau simpan PDF (A4, 4 kad satu muka surat).
+- `/?meja=7&kedai=Nama%20Kedai&tema=kopitiam` buka skrin pelanggan sahaja untuk Meja 7, dengan nama kedai dan template tersebut.
+- `/qr.html` ialah page cetak QR: pilih nama kedai, bilangan meja dan template, kemudian cetak atau simpan PDF (A4, 4 kad satu muka surat).
 
-Library QR (`vendor/qrcode.js`, qrcode-generator 1.4.4, lesen MIT, Kazuhiko Arase) disimpan dalam repo supaya tak bergantung pada CDN.
+## Struktur
+
+```
+index.html        demo 3 skrin + mod pelanggan (?meja=)
+qr.html           cetak kad QR meja
+assets/shared.js  template, tetapan, storan
+vendor/qrcode.js  qrcode-generator 1.4.4 (MIT, Kazuhiko Arase)
+AUDIT.md          hasil audit dan senarai kerja sebelum produksi
+```
 
 ## Status
 
-Ini **demo** dalam satu fail (`index.html`), tanpa backend. Data disimpan dalam memori sahaja dan hilang bila page di-refresh. Tab browser yang sama boleh berkongsi data melalui `BroadcastChannel`.
+Ini **demo** tanpa backend. Data disimpan dalam browser sahaja (`localStorage`). Tab dalam browser yang sama berkongsi data. Butang **Reset demo** padam semua data demo.
 
-Untuk guna sebenar (telefon pelanggan ke tablet dapur), perlu tambah backend dan database.
-
-## Cara buka
-
-Buka `index.html` dalam browser, atau aktifkan GitHub Pages pada branch `main`.
+Lihat [AUDIT.md](AUDIT.md) untuk senarai perkara yang perlu ada sebelum guna di kedai sebenar.

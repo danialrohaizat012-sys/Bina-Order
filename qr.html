@@ -2,48 +2,54 @@
 <html lang="ms">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2D5B">
 <title>Cetak QR Meja · Bina Order</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Lora:wght@600;700&family=Oswald:wght@600;700&family=Unbounded:wght@600;700&display=swap">
+<script src="assets/shared.js"></script>
+<script>const CFG = binaLoadSettings(); binaApplyTheme(CFG.theme);</script>
 <style>
-/* Print sheet: one standee card per table, 4 cards per A4 page. Light only, because it is made for paper. */
+/* Print sheet: one standee card per table, 4 per A4 page. Cards take the chosen template. */
 :root{
-  --bg:#EEF0F5; --paper:#FFFFFF; --ink:#121A2B; --muted:#5B6478; --line:#DCE0E9;
-  --brand:#1B2D5B; --accent:#D3362A;
-  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --bg:#EEF0F5; --surface:#FFFFFF; --sunk:#F5F6FA; --ink:#121A2B; --muted:#5B6478; --line:#DCE0E9;
+  --brand:#1B2D5B; --brand-ink:#FFFFFF; --accent:#D3362A; --accent-ink:#FFFFFF; --head-bg:#1B2D5B; --radius:16px;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif; --display-weight:800; --display-case:none; --display-track:-0.01em;
   --body:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
-  color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;padding:24px 16px 48px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
 .wrap{max-width:1000px;margin:0 auto;display:grid;gap:20px}
-h1{margin:0;font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em}
+.disp{font-family:var(--display);font-weight:var(--display-weight);text-transform:var(--display-case);letter-spacing:var(--display-track)}
+h1{margin:0;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em}
 .intro{margin:4px 0 0;color:var(--muted)}
-.controls{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;grid-template-columns:2fr 1fr 3fr;gap:12px;align-items:end}
-@media (max-width:760px){.controls{grid-template-columns:1fr}}
-label{display:grid;gap:4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-input{font:inherit;font-size:15px;text-transform:none;letter-spacing:0;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;min-width:0;width:100%}
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;grid-template-columns:2fr 1fr 1.4fr 3fr;gap:12px;align-items:end}
+@media (max-width:860px){.controls{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.controls{grid-template-columns:1fr}}
+label{display:grid;gap:4px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);min-width:0}
+input,select{font:inherit;font-size:15px;text-transform:none;letter-spacing:0;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--sunk);min-width:0;width:100%}
 .actions{display:flex;gap:8px;flex-wrap:wrap;grid-column:1/-1}
-.btn{border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;text-decoration:none}
-.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-.btn:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:800;cursor:pointer;background:var(--ink);color:var(--surface);text-decoration:none}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .hint{grid-column:1/-1;margin:0;font-size:13px;color:var(--muted)}
 
 .sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;break-inside:avoid;page-break-inside:avoid}
-.card-top{background:var(--brand);color:#fff;padding:14px 16px 12px;text-align:center}
-.shop{font-family:var(--display);font-weight:800;font-size:18px;line-height:1.15;text-wrap:balance}
-.card-mid{padding:14px 18px 10px;display:grid;justify-items:center;gap:8px;text-align:center}
-.meja{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.meja b{display:block;font-family:var(--display);font-size:56px;line-height:.95;letter-spacing:-.02em;color:var(--ink)}
+.card{background:#fff;color:#121A2B;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;break-inside:avoid;page-break-inside:avoid}
+.card-top{background:var(--head-bg);color:var(--brand-ink);padding:14px 16px 12px;text-align:center}
+.shop{font-size:19px;line-height:1.15;text-wrap:balance}
+.card-mid{padding:14px 18px 12px;display:grid;justify-items:center;gap:8px;text-align:center}
+.meja{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#5B6478}
+.meja b{display:block;font-family:var(--display);font-weight:var(--display-weight);font-size:58px;line-height:.95;letter-spacing:-.02em;color:#121A2B}
 .qr{width:100%;max-width:190px}
 .qr svg{display:block;width:100%;height:auto}
-.steps{margin:0;padding:0;list-style:none;display:flex;justify-content:center;gap:6px;font-size:13px;font-weight:700}
-.steps li+li::before{content:"›";margin-right:6px;color:var(--accent)}
-.pay{font-size:12.5px;color:var(--muted)}
-.card-foot{border-top:1px dashed var(--line);padding:8px 12px;display:flex;justify-content:space-between;gap:8px;font-size:10.5px;color:var(--muted)}
+.steps{margin:0;padding:0;list-style:none;display:flex;justify-content:center;gap:6px;font-size:13px;font-weight:800}
+.steps li+li::before{content:"›";margin-right:6px;color:var(--brand)}
+.pay{font-size:12.5px;color:#5B6478}
+.card-foot{border-top:1px dashed #DCE0E9;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;font-size:10.5px;color:#5B6478}
 .card-foot span:last-child{font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
 @page{size:A4;margin:10mm}
@@ -65,60 +71,77 @@ input{font:inherit;font-size:15px;text-transform:none;letter-spacing:0;color:var
   </header>
 
   <form class="controls no-print" id="form">
-    <label for="shop">Nama kedai<input id="shop" value="Kedai Makan Kak Yah"></label>
-    <label for="count">Bilangan meja<input id="count" type="number" min="1" max="60" value="12"></label>
-    <label for="base">Link sistem<input id="base" inputmode="url"></label>
+    <label for="shop">Nama kedai<input id="shop" maxlength="40" autocomplete="off"></label>
+    <label for="count">Bilangan meja<input id="count" type="number" min="1" max="50" inputmode="numeric"></label>
+    <label for="tema">Template<select id="tema"></select></label>
+    <label for="base">Link sistem<input id="base" inputmode="url" autocomplete="off"></label>
     <div class="actions">
       <button class="btn" type="button" id="print">Cetak / Simpan PDF</button>
       <a class="btn ghost" href="./">Kembali ke demo</a>
     </div>
-    <p class="hint">Saiz A4, 4 kad satu muka surat. Potong dan masukkan ke dalam standee akrilik A6.</p>
+    <p class="hint">Saiz A4, 4 kad satu muka surat. Potong dan masukkan ke dalam standee akrilik A6. Scan satu QR dengan telefon untuk uji sebelum cetak.</p>
   </form>
 
-  <main class="sheet" id="sheet"></main>
+  <main class="sheet" id="sheet" aria-label="Kad QR"></main>
 </div>
 
 <script src="vendor/qrcode.js"></script>
 <script>
+"use strict";
 const $ = id => document.getElementById(id);
+const esc = binaEsc;
 const defaultBase = location.origin + location.pathname.replace(/qr(\.html)?$/, "");
+
+$("shop").value = CFG.shop;
+$("count").value = CFG.tables;
+$("tema").innerHTML = Object.entries(BINA_THEMES).map(([k, t]) => `<option value="${k}"${k === CFG.theme ? " selected" : ""}>${t.name}</option>`).join("");
 $("base").value = defaultBase;
 
-const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-function linkFor(base, n){
-  const u = new URL(base, location.href);
+function linkFor(base, n, shop, theme){
+  let u;
+  try { u = new URL(base, location.href); } catch (e) { u = new URL(defaultBase); }
   u.searchParams.set("meja", n);
+  u.searchParams.set("kedai", shop);
+  u.searchParams.set("tema", theme);
   return u.toString();
 }
 
 function render(){
   const shop = $("shop").value.trim() || "Nama Kedai";
-  const n = Math.min(60, Math.max(1, parseInt($("count").value, 10) || 1));
-  let base = $("base").value.trim() || defaultBase;
+  const n = Math.min(50, Math.max(1, parseInt($("count").value, 10) || 1));
+  const theme = $("tema").value;
+  const base = $("base").value.trim() || defaultBase;
   let html = "";
-  for(let i = 1; i <= n; i++){
-    let url;
-    try { url = linkFor(base, i); } catch(e){ url = linkFor(defaultBase, i); }
+  for (let i = 1; i <= n; i++){
+    const url = linkFor(base, i, shop, theme);
     const qr = qrcode(0, "M");
     qr.addData(url);
     qr.make();
     const svg = qr.createSvgTag({cellSize: 4, margin: 2, scalable: true, alt: `QR Meja ${i}`});
     html += `<article class="card">
-      <div class="card-top"><div class="shop">${esc(shop)}</div></div>
+      <div class="card-top"><div class="shop disp">${esc(shop)}</div></div>
       <div class="card-mid">
         <div class="meja">Meja<b>${i}</b></div>
         <div class="qr">${svg}</div>
         <ol class="steps"><li>Scan</li><li>Pilih menu</li><li>Hantar</li></ol>
         <div class="pay">Bayar di kaunter selepas makan</div>
       </div>
-      <div class="card-foot"><span>Bina Order · Bina Lab</span><span>${esc(url.replace(/^https?:\/\//, ""))}</span></div>
+      <div class="card-foot"><span>Bina Order · Bina Lab</span><span>Meja ${i}</span></div>
     </article>`;
   }
   $("sheet").innerHTML = html;
 }
 
-["shop","count","base"].forEach(id => $(id).addEventListener("input", render));
+function persist(){
+  const saved = binaStore.get("bo.settings", {}) || {};
+  binaStore.set("bo.settings", {...saved,
+    shop: $("shop").value.trim().slice(0, 40) || "Nama Kedai",
+    tables: Math.min(50, Math.max(1, parseInt($("count").value, 10) || 12)),
+    theme: $("tema").value});
+}
+
+["shop", "count", "base"].forEach(id => $(id).addEventListener("input", () => { render(); if (id !== "base") persist(); }));
+$("tema").addEventListener("change", () => { binaApplyTheme($("tema").value); render(); persist(); });
 $("form").addEventListener("submit", e => e.preventDefault());
 $("print").addEventListener("click", () => window.print());
 render();
