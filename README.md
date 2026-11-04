@@ -17,6 +17,16 @@ Pelanggan scan QR di meja, order sendiri dari telefon, dan bayar di kaunter sele
 3. **Kaunter**: grid meja, bil penuh ikut meja, amaran panggil staf, terima bayaran (Tunai / DuitNow QR / Kad), jualan hari ini, bil terakhir.
 4. **Urus Menu** (owner / manager): tambah, edit dan padam menu, muat naik gambar, kategori, susunan, tag Laris dan stok habis.
 
+## Happy Hour / promo
+
+Di skrin **Urus Menu**, kad **Happy Hour**:
+
+- **Mod**: *Ikut masa* (ikut jam dan hari), *Sentiasa aktif* (sesuai untuk demo) atau *Tutup*.
+- **Nama promo**, masa **mula** dan **tamat**, dan **hari**. Masa yang melepasi tengah malam (contoh 10 malam – 1 pagi) disokong.
+- **Item promo**: pilih menu, kemudian tetapkan potongan dalam **peratus** (1–90%) atau **ringgit**. Harga promo dibundarkan ke 10 sen terdekat, dan pratonton harga dipaparkan sebelum simpan.
+
+Bila promo aktif, pelanggan nampak seksyen promo di atas menu, harga asal dipangkah dan label potongan. Harga promo disimpan dalam order pada masa order dibuat, jadi bil tak berubah bila promo tamat. Kaunter tunjuk jumlah **Jimat promo**.
+
 ## Template UI
 
 Pilih di bahagian atas demo. Ada 5 pilihan: **Bina Klasik**, **Kopitiam**, **Warisan Kelantan**, **Kafe Moden** dan **Gerai Malam**.

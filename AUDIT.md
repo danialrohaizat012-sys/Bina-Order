@@ -38,6 +38,13 @@ Audit ada dua bahagian:
 - Kalau storan browser penuh, menu tak disimpan dan mesej ralat dipaparkan. Tiada data yang hilang tanpa diberitahu.
 - "Reset demo" hanya padam order dan jualan. Menu yang dah diedit kekal.
 
+## Happy Hour / promo
+
+- Jadual promo (mod, nama, masa, hari) disimpan berasingan daripada menu. Potongan disimpan pada setiap item menu.
+- Harga promo dikira semasa order dihantar dan disimpan dalam baris order, bersama harga asal. Kalau promo tamat selepas order, bil tak berubah.
+- Pengesahan: peratus 1–90%. Potongan ringgit minimum RM 0.10, dan harga promo tak boleh kurang dari RM 0.10.
+- **Untuk produksi:** semak waktu promo di **server** (bukan jam telefon pelanggan), kerana jam telefon boleh diubah. Simpan juga laporan jualan promo.
+
 ## Ciri baru dalam versi sebelum ini
 
 - **5 template UI**: Bina Klasik, Kopitiam, Warisan Kelantan, Kafe Moden, Gerai Malam. Setiap satu ada warna, font, bucu dan susun atur menu (senarai atau grid) sendiri.

@@ -363,6 +363,49 @@ input,textarea,select{font:inherit;color:inherit}
 .ed-err{margin:0;background:var(--danger-soft);color:var(--danger);border-radius:8px;padding:8px 12px;font-weight:700;font-size:13.5px}
 .ed-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 
+/* Happy Hour */
+.price.promo{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px}
+.price .pp{color:var(--danger)}
+.price s,.hh-row s,.rline s,.ed-pprev s{color:var(--muted);font-weight:500}
+.off{display:inline-block;font-family:var(--body);font-size:10.5px;font-weight:800;color:#fff;background:var(--danger);border-radius:6px;padding:1px 6px;white-space:nowrap}
+.hh-banner{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:12px 0 10px;padding:12px 14px;border-radius:var(--radius);color:#fff;
+  background:repeating-linear-gradient(-45deg,rgba(255,255,255,.09) 0 8px,transparent 8px 16px),var(--danger)}
+.hh-banner b{display:block;font-size:18px;line-height:1.1}
+.hh-banner span{font-size:12.5px;opacity:.9}
+.hh-banner em{font-style:normal;font-size:12px;font-weight:800;background:rgba(0,0,0,.22);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.hh-items{padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.cats button.hh-chip{border-color:var(--danger);color:var(--danger)}
+.cats button.hh-chip[aria-pressed="true"]{background:var(--danger);color:#fff}
+.hh-tag{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--danger);background:var(--danger-soft);border-radius:5px;padding:1px 5px;vertical-align:2px}
+.saverow{display:flex;justify-content:space-between;color:var(--ok);font-weight:700;font-size:14px}
+.saverow .amt{color:var(--ok)}
+.hh-card{border:1.5px solid var(--danger);border-radius:var(--radius);padding:14px;display:grid;gap:12px;background:linear-gradient(var(--danger-soft),var(--surface) 70px)}
+.hh-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.hh-title{display:flex;align-items:center;gap:10px}
+.hh-title h3{margin:0;font-size:18px}
+.state{font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 10px;background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.state.on{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.seg{display:inline-flex;background:var(--sunk);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.hh-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr) minmax(0,.8fr) minmax(0,2fr);gap:10px;align-items:end}
+@media (max-width:900px){.hh-grid{grid-template-columns:1fr 1fr}.hh-grid .field:first-child,.hh-days{grid-column:1/-1}}
+.hh-grid input{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface);width:100%;min-width:0}
+.days{display:flex;gap:4px;flex-wrap:wrap}
+.days button{min-width:40px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 6px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.days button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.hh-list{display:grid;gap:4px}
+.hh-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:6px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line)}
+.hh-row strong{color:var(--danger)}
+.hh-add{display:flex;gap:8px;flex-wrap:wrap}
+.hh-add select{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.mg-info em.hh{color:var(--danger)}
+.ed-promo{border:1.5px dashed var(--danger);border-radius:var(--radius);padding:12px;display:grid;gap:10px;background:var(--danger-soft)}
+.ed-promo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ed-promo-row select,.ed-promo-row input{background:var(--surface)!important}
+.ed-pprev{grid-column:1/-1;margin:0;font-size:13.5px}
+.ed-pprev b{color:var(--danger);font-family:var(--mono)}
+
 .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:50;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow);animation:fade .2s}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -447,11 +490,11 @@ const DEFAULT_MENU = [
   {id:"percik", cat:"Lauk", name:"Ayam Percik", desc:"Bakar, kuah percik manis pedas", price:600, e:"🍗"},
   {id:"lekor", cat:"Lauk", name:"Keropok Lekor", desc:"Goreng panas, cicah sos", price:400, e:"🐟"},
   {id:"telur", cat:"Lauk", name:"Telur Masin", desc:"Sebiji", price:150, e:"🥚"},
-  {id:"akok", cat:"Kuih", name:"Akok (5 biji)", desc:"Kuih tradisional Kelantan", price:300, e:"🧁"},
+  {id:"akok", cat:"Kuih", name:"Akok (5 biji)", desc:"Kuih tradisional Kelantan", price:300, e:"🧁", promo:{type:"pct", value:30}},
   {id:"itik", cat:"Kuih", name:"Tahi Itik", desc:"Manis, berkuah santan", price:300, e:"🍮"},
-  {id:"tarik", cat:"Minuman", name:"Teh Tarik", desc:"Panas atau ais", price:250, e:"☕", tag:"Laris"},
+  {id:"tarik", cat:"Minuman", name:"Teh Tarik", desc:"Panas atau ais", price:250, e:"☕", tag:"Laris", promo:{type:"rm", value:50}},
   {id:"kopio", cat:"Minuman", name:"Kopi O Kelantan", desc:"Kopi kampung, pekat", price:200, e:"☕"},
-  {id:"bandung", cat:"Minuman", name:"Sirap Bandung", desc:"Ais", price:300, e:"🥤"},
+  {id:"bandung", cat:"Minuman", name:"Sirap Bandung", desc:"Ais", price:300, e:"🥤", promo:{type:"pct", value:20}},
   {id:"kelapa", cat:"Minuman", name:"Air Kelapa Muda", desc:"Sebiji kelapa", price:450, e:"🥥"},
   {id:"limau", cat:"Minuman", name:"Teh O Ais Limau", desc:"Ais", price:300, e:"🍋"},
 ];
@@ -489,7 +532,58 @@ function saveMenu(){
   try { bc && bc.postMessage({kind: "menu", menu: MENU}); } catch (e) {}
   return true;
 }
-const line = (id, q) => [id, q, BY[id].name, BY[id].price];
+
+/* ================= Happy Hour ================= */
+// Schedule is shop-wide; each dish carries its own discount in item.promo = {type: "pct" | "rm", value}
+// (pct = whole percent, rm = sen). Prices are rounded to the nearest 10 sen.
+const DEFAULT_HH = {mode: "on", name: "Happy Hour", start: "15:00", end: "17:00", days: [0, 1, 2, 3, 4, 5, 6]};
+const DAYS = ["Ahd", "Isn", "Sel", "Rab", "Kha", "Jum", "Sab"];
+function validHH(h){
+  return h && ["auto", "on", "off"].includes(h.mode) && typeof h.name === "string" &&
+    /^\d\d:\d\d$/.test(h.start) && /^\d\d:\d\d$/.test(h.end) && Array.isArray(h.days);
+}
+let HH = (() => { const h = binaStore.get("bo.hh", null); return validHH(h) ? h : {...DEFAULT_HH, days: [...DEFAULT_HH.days]}; })();
+function saveHH(){ binaStore.set("bo.hh", HH); try { bc && bc.postMessage({kind: "hh", hh: HH}); } catch (e) {} }
+const hm = s => +s.slice(0, 2) * 60 + +s.slice(3, 5);
+function hhActive(now = new Date()){
+  if (HH.mode === "on") return true;
+  if (HH.mode === "off") return false;
+  const t = now.getHours() * 60 + now.getMinutes(), a = hm(HH.start), b = hm(HH.end);
+  if (a === b) return false;
+  if (a < b) return HH.days.includes(now.getDay()) && t >= a && t < b;
+  // Overnight window, e.g. 22:00-01:00: after midnight belongs to the previous day
+  if (t >= a) return HH.days.includes(now.getDay());
+  if (t < b) return HH.days.includes((now.getDay() + 6) % 7);
+  return false;
+}
+function promoPrice(m){
+  if (!m.promo) return m.price;
+  const raw = m.promo.type === "pct" ? m.price * (100 - m.promo.value) / 100 : m.price - m.promo.value;
+  return Math.max(10, Math.round(raw / 10) * 10);
+}
+const priceNow = m => m.promo && hhActive() ? promoPrice(m) : m.price;
+const promoLabel = p => p.type === "pct" ? `-${p.value}%` : `-${rm(p.value)}`;
+function clock(s){
+  const h = +s.slice(0, 2), m = s.slice(3, 5), h12 = h % 12 || 12;
+  const part = h < 12 ? "pagi" : h < 14 ? "tengah hari" : h < 19 ? "petang" : "malam";
+  return `${h12}:${m} ${part}`;
+}
+function hhEndsIn(){
+  if (HH.mode !== "auto") return "";
+  const now = new Date(); let left = hm(HH.end) - (now.getHours() * 60 + now.getMinutes());
+  if (left <= 0) left += 1440;
+  const h = Math.floor(left / 60), m = left % 60;
+  return `Tamat dalam ${h ? h + " jam " : ""}${m} min`;
+}
+function validPromo(p, price){
+  if (!p) return true;
+  if (p.type === "pct") return Number.isInteger(p.value) && p.value >= 1 && p.value <= 90;
+  if (p.type === "rm") return Number.isInteger(p.value) && p.value >= 10 && price - p.value >= 10;
+  return false;
+}
+
+// An order line: [id, qty, name, price paid, normal price if it was a promo (else 0)]
+const line = (id, q) => { const m = BY[id], p = priceNow(m); return [id, q, m.name, p, p < m.price ? m.price : 0]; };
 
 function seed(){
   const now = Date.now();
@@ -546,12 +640,14 @@ function receiveMenu(list){
 if (bc) bc.onmessage = e => {
   const d = e.data || {};
   if (d.kind === "menu") receiveMenu(d.menu); else if (d.kind === "state") receiveState(d.state);
+  else if (d.kind === "hh" && validHH(d.hh)){ HH = d.hh; render(); }
 };
 window.addEventListener("storage", e => {
   if (!e.newValue) return;
   try {
     if (e.key === "bo.state") receiveState(JSON.parse(e.newValue));
     if (e.key === "bo.menu") receiveMenu(JSON.parse(e.newValue));
+    if (e.key === "bo.hh"){ const h = JSON.parse(e.newValue); if (validHH(h)){ HH = h; render(); } }
   } catch (err) {}
 });
 
@@ -598,29 +694,42 @@ const ICON_CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" 
 const ICON_PHOTO = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/></svg>';
 
 /* ================= Customer ================= */
+const HH_CAT = "Happy Hour";
+function priceHTML(m){
+  if (!(m.promo && hhActive())) return `<div class="price">${rm(m.price)}</div>`;
+  return `<div class="price promo"><span class="pp">${rm(promoPrice(m))}</span><s aria-label="Harga asal">${rm(m.price)}</s><span class="off">${promoLabel(m.promo)}</span></div>`;
+}
+function itemHTML(m){
+  const qn = ui.cart[m.id] || 0, out = isOut(m.id);
+  return `<div class="item${out ? " is-out" : ""}">
+    <div class="tile${m.img ? " has-img" : ""}" aria-hidden="true">${tile(m)}</div>
+    <div class="info"><h4>${m.tag && !out ? `<span class="tag">${esc(m.tag)}</span>` : ""}${esc(m.name)}</h4>${m.desc ? `<p>${esc(m.desc)}</p>` : ""}${priceHTML(m)}</div>
+    <div class="step">${out ? `<span class="out">Habis</span>` :
+      (qn ? `<button type="button" data-dec="${m.id}" aria-label="Kurang ${esc(m.name)}">−</button><span class="num" aria-label="${qn} dipilih">${qn}</span>` : "") +
+      `<button type="button" class="add" data-inc="${m.id}" aria-label="Tambah ${esc(m.name)}">+</button>`}</div>
+  </div>`;
+}
+const hhItems = () => hhActive() ? MENU.filter(m => m.promo) : [];
 function menuHTML(){
   const q = ui.q.trim().toLowerCase();
-  const cats = ui.cat === "Semua" || !CATS.includes(ui.cat) ? CATS : [ui.cat];
+  const match = m => !q || (m.name + " " + (m.desc || "")).toLowerCase().includes(q);
+  const promos = hhItems();
+  const showHH = promos.length && (ui.cat === "Semua" || ui.cat === HH_CAT);
+  const cats = ui.cat === HH_CAT ? [] : ui.cat === "Semua" || !CATS.includes(ui.cat) ? CATS : [ui.cat];
   let html = "", hits = 0;
+  if (showHH){
+    const list = promos.filter(match);
+    html += `<div class="hh-banner"><div><b class="disp">${esc(HH.name || "Happy Hour")}</b><span>${clock(HH.start)} – ${clock(HH.end)}</span></div>${hhEndsIn() ? `<em>${hhEndsIn()}</em>` : ""}</div>`;
+    if (list.length){ hits += list.length; html += `<div class="items hh-items">${list.map(itemHTML).join("")}</div>`; }
+  }
   cats.forEach(c => {
-    const list = MENU.filter(m => m.cat === c && (!q || (m.name + " " + (m.desc || "")).toLowerCase().includes(q)));
+    const list = MENU.filter(m => m.cat === c && match(m));
     if (!list.length) return;
     hits += list.length;
-    html += `<h3 class="cat-h">${esc(c)}</h3><div class="items">`;
-    list.forEach(m => {
-      const qn = ui.cart[m.id] || 0, out = isOut(m.id);
-      html += `<div class="item${out ? " is-out" : ""}">
-        <div class="tile${m.img ? " has-img" : ""}" aria-hidden="true">${tile(m)}</div>
-        <div class="info"><h4>${m.tag && !out ? `<span class="tag">${esc(m.tag)}</span>` : ""}${esc(m.name)}</h4>${m.desc ? `<p>${esc(m.desc)}</p>` : ""}<div class="price">${rm(m.price)}</div></div>
-        <div class="step">${out ? `<span class="out">Habis</span>` :
-          (qn ? `<button type="button" data-dec="${m.id}" aria-label="Kurang ${esc(m.name)}">−</button><span class="num" aria-label="${qn} dipilih">${qn}</span>` : "") +
-          `<button type="button" class="add" data-inc="${m.id}" aria-label="Tambah ${esc(m.name)}">+</button>`}</div>
-      </div>`;
-    });
-    html += `</div>`;
+    html += `<h3 class="cat-h">${esc(c)}</h3><div class="items">${list.map(itemHTML).join("")}</div>`;
   });
   if (!MENU.length) return `<p class="nores">Menu belum ada. Tambah menu di skrin Urus Menu.</p>`;
-  return hits ? html : `<p class="nores">Tiada menu sepadan dengan “${esc(ui.q)}”.</p>`;
+  return hits ? html : (showHH ? html : "") + `<p class="nores">Tiada menu sepadan dengan “${esc(ui.q)}”.</p>`;
 }
 
 function renderCustomer(){
@@ -645,7 +754,7 @@ function renderCustomer(){
   if (ui.view === "menu"){
     body = `<div class="ph-tools">
         <div class="search">${ICON_SEARCH}<label class="sr" for="q">Cari menu</label><input id="q" type="search" placeholder="Cari menu" value="${esc(ui.q)}" autocomplete="off"></div>
-        <div class="cats">${["Semua", ...CATS].map(c => `<button type="button" data-cat="${esc(c)}" aria-pressed="${ui.cat === c}">${esc(c)}</button>`).join("")}</div>
+        <div class="cats">${["Semua", ...(hhItems().length ? [HH_CAT] : []), ...CATS].map(c => `<button type="button" data-cat="${esc(c)}" aria-pressed="${ui.cat === c}"${c === HH_CAT ? ' class="hh-chip"' : ""}>${esc(c === HH_CAT ? (HH.name || HH_CAT) : c)}</button>`).join("")}</div>
       </div><div class="menu" id="menulist">${menuHTML()}</div>`;
   } else {
     body = `<div class="mine">`;
@@ -666,7 +775,7 @@ function renderCustomer(){
           <div class="round-h"><span>Pesanan ${i + 1} · <b>${no3(o.no)}</b> · ${ago(o.t)}</span></div>
           <div class="progress" aria-hidden="true">${[1,2,3].map(n => `<i class="${n < st || o.status === "hidang" ? "on" : n === st ? "now" : ""}"></i>`).join("")}</div>
           <div class="stlabel">${STATUS[o.status]}</div>
-          ${o.items.map(it => `<div class="line"><span><span class="q">${it[1]}×</span>${esc(it[2])}</span><span class="amt">${rm(it[3] * it[1])}</span></div>`).join("")}
+          ${o.items.map(it => `<div class="line"><span><span class="q">${it[1]}×</span>${esc(it[2])}${it[4] ? `<span class="hh-tag">Promo</span>` : ""}</span><span class="amt">${rm(it[3] * it[1])}</span></div>`).join("")}
           ${o.note ? `<div class="tnote">Nota: ${esc(o.note)}</div>` : ""}
         </div>`;
       });
@@ -689,12 +798,13 @@ function renderCustomer(){
       <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-h">
         <div class="sheet-h"><h3 class="disp" id="sheet-h" tabindex="-1">Semak pesanan</h3><button type="button" class="x" data-close aria-label="Tutup">✕</button></div>
         <div class="sheet-body">
-          ${cart.map(([id, q, name, price]) => `<div class="rline"><div><div class="nm">${esc(name)}</div><div class="sub">${rm(price)} × ${q} = ${rm(price * q)}</div></div>
+          ${cart.map(([id, q, name, price, orig]) => `<div class="rline"><div><div class="nm">${esc(name)}${orig ? `<span class="hh-tag">Promo</span>` : ""}</div><div class="sub">${orig ? `<s>${rm(orig)}</s> ` : ""}${rm(price)} × ${q} = ${rm(price * q)}</div></div>
             <div class="step"><button type="button" data-dec="${id}" aria-label="Kurang ${esc(name)}">−</button><span class="num">${q}</span><button type="button" class="add" data-inc="${id}" aria-label="Tambah ${esc(name)}">+</button></div></div>`).join("")}
           <label class="lbl" for="note">Nota untuk dapur</label>
           <textarea class="note" id="note" rows="2" maxlength="120" placeholder="Contoh: kurang pedas, air kurang manis">${esc(ui.note)}</textarea>
         </div>
         <div class="sheet-foot">
+          ${(() => { const sv = cart.reduce((s, it) => s + (it[4] ? (it[4] - it[3]) * it[1] : 0), 0); return sv ? `<div class="saverow"><span>Jimat ${esc(HH.name || "Happy Hour")}</span><span class="mono">−${rm(sv)}</span></div>` : ""; })()}
           <div class="sumrow"><span>Jumlah</span><span class="mono">${rm(sum(cart))}</span></div>
           <button type="button" class="cta" id="send"><span>Hantar ke dapur</span><span>Meja ${ui.table}</span></button>
           <p class="hint">Bayar di kaunter selepas makan.</p>
@@ -762,17 +872,19 @@ function renderCounter(){
   } else {
     // Group by name + price, so the same dish ordered before and after a price change shows as two lines
     const agg = new Map();
-    os.forEach(o => o.items.forEach(([, q, name, price]) => {
+    os.forEach(o => o.items.forEach(([, q, name, price, orig]) => {
       const k = name + "|" + price, cur = agg.get(k);
-      agg.set(k, cur ? [cur[0] + q, name, price] : [q, name, price]);
+      agg.set(k, cur ? [cur[0] + q, name, price, orig] : [q, name, price, orig || 0]);
     }));
     const lines = [...agg.values()];
     const amt = lines.reduce((s, [q, , p]) => s + q * p, 0);
+    const saved = lines.reduce((s, [q, , p, o]) => s + (o ? (o - p) * q : 0), 0);
     const pending = os.filter(o => o.status !== "hidang").reduce((s, o) => s + o.items.reduce((a, it) => a + it[1], 0), 0);
     receipt = `<div class="receipt">
       <div class="rc-h"><div><h3 class="disp">Bil Meja ${ui.sel}</h3><p>${os.length} pusingan order · mula ${ago(os[0].t)}</p></div><span class="muted">${os.map(o => no3(o.no)).join(", ")}</span></div>
       ${pending ? `<div class="rc-warn">${pending} item belum dihidang</div>` : ""}
-      <div class="rc-lines">${lines.map(([q, name, price]) => `<div class="line"><span><span class="q">${q}×</span>${esc(name)}</span><span class="amt">${rm(price * q)}</span></div>`).join("")}</div>
+      <div class="rc-lines">${lines.map(([q, name, price, orig]) => `<div class="line"><span><span class="q">${q}×</span>${esc(name)}${orig ? `<span class="hh-tag">Promo</span>` : ""}</span><span class="amt">${rm(price * q)}</span></div>`).join("")}
+        ${saved ? `<div class="line saverow"><span>Jimat promo</span><span class="amt">−${rm(saved)}</span></div>` : ""}</div>
       <div class="rc-tot"><span>Jumlah</span><span class="mono">${rm(amt)}</span></div>
       <div class="pay" role="group" aria-label="Cara bayaran">${["Tunai", "DuitNow QR", "Kad"].map(m => `<button type="button" data-method="${m}" aria-pressed="${ui.method === m}">${m}</button>`).join("")}</div>
       <button type="button" class="cta" id="paid"><span>Terima bayaran · ${ui.method}</span><span class="mono">${rm(amt)}</span></button></div>`;
@@ -793,6 +905,38 @@ function renderCounter(){
 }
 
 /* ================= Menu manager (owner / manager) ================= */
+function hhCardHTML(){
+  const active = hhActive();
+  const promos = MENU.filter(m => m.promo);
+  const others = MENU.filter(m => !m.promo);
+  const modes = [["auto", "Ikut masa"], ["on", "Sentiasa aktif"], ["off", "Tutup"]];
+  return `<section class="hh-card" aria-labelledby="hh-title">
+    <div class="hh-top">
+      <div class="hh-title"><h3 class="disp" id="hh-title">Happy Hour</h3><span class="state${active ? " on" : ""}">${active ? "Sedang aktif" : "Tidak aktif"}</span></div>
+      <div class="seg" role="group" aria-label="Mod Happy Hour">${modes.map(([k, l]) => `<button type="button" data-hhmode="${k}" aria-pressed="${HH.mode === k}">${l}</button>`).join("")}</div>
+    </div>
+    <div class="hh-grid">
+      <div class="field"><label for="hh-name">Nama promo</label><input id="hh-name" maxlength="24" value="${esc(HH.name)}" placeholder="Happy Hour"></div>
+      <div class="field"><label for="hh-start">Mula</label><input id="hh-start" type="time" value="${HH.start}"></div>
+      <div class="field"><label for="hh-end">Tamat</label><input id="hh-end" type="time" value="${HH.end}"></div>
+      <div class="field hh-days"><span class="lbl" id="hh-days-l">Hari</span><div class="days" role="group" aria-labelledby="hh-days-l">${DAYS.map((d, i) => `<button type="button" data-hhday="${i}" aria-pressed="${HH.days.includes(i)}">${d}</button>`).join("")}</div></div>
+    </div>
+    ${HH.mode === "on" ? `<p class="muted">Promo aktif sepanjang masa (sesuai untuk demo). Pilih "Ikut masa" untuk guna jadual di atas.</p>` : ""}
+    <div class="hh-list">
+      ${promos.length ? promos.map(m => `<div class="hh-row">
+          <div class="mg-thumb${m.img ? " has-img" : ""}" aria-hidden="true">${tile(m)}</div>
+          <div class="mg-info"><b>${esc(m.name)}</b><span><s>${rm(m.price)}</s> → <strong>${rm(promoPrice(m))}</strong></span></div>
+          <span class="off">${promoLabel(m.promo)}</span>
+          <button type="button" class="chip-btn" data-edit="${m.id}">Ubah</button>
+          <button type="button" class="icon-btn" data-hhrm="${m.id}" aria-label="Buang ${esc(m.name)} dari promo">✕</button>
+        </div>`).join("") : `<p class="muted">Belum ada item promo. Pilih menu di bawah untuk mula.</p>`}
+    </div>
+    ${others.length ? `<div class="hh-add"><label class="sr" for="hh-pick">Pilih menu untuk promo</label>
+      <select id="hh-pick">${others.map(m => `<option value="${m.id}">${esc(m.name)} · ${rm(m.price)}</option>`).join("")}</select>
+      <button type="button" class="chip-btn primary" id="hh-addbtn">+ Tambah item promo</button></div>` : ""}
+  </section>`;
+}
+
 function renderManager(){
   const cats = ["Semua", ...CATS];
   if (!cats.includes(ui.mcat)) ui.mcat = "Semua";
@@ -810,7 +954,7 @@ function renderManager(){
     list.forEach((m, i) => {
       rows += `<div class="mg-row${isOut(m.id) ? " is-out" : ""}">
         <div class="mg-thumb${m.img ? " has-img" : ""}" aria-hidden="true">${tile(m)}</div>
-        <div class="mg-info"><b>${esc(m.name)}</b><span>${m.tag ? `<em>${esc(m.tag)}</em> · ` : ""}${m.img ? "Ada gambar" : "Tiada gambar"}${isOut(m.id) ? " · Habis" : ""}</span></div>
+        <div class="mg-info"><b>${esc(m.name)}</b><span>${m.promo ? `<em class="hh">${esc(HH.name || "Happy Hour")} ${promoLabel(m.promo)}</em> · ` : ""}${m.tag ? `<em>${esc(m.tag)}</em> · ` : ""}${m.img ? "Ada gambar" : "Tiada gambar"}${isOut(m.id) ? " · Habis" : ""}</span></div>
         <span class="mono mg-price">${rm(m.price)}</span>
         <span class="mg-move">
           <button type="button" class="icon-btn" data-move="${m.id}" data-dir="-1" aria-label="Naikkan ${esc(m.name)}" ${i === 0 ? "disabled" : ""}>↑</button>
@@ -829,6 +973,7 @@ function renderManager(){
         <button type="button" class="chip-btn primary" data-edit="new">+ Tambah menu</button>
       </div></div>
     <p class="muted">${MENU.length} menu · ${CATS.length} kategori · ${photos} gambar. Perubahan terus nampak di telefon pelanggan.</p>
+    ${hhCardHTML()}
     <div class="cats mg-cats">${cats.map(c => `<button type="button" data-mcat="${esc(c)}" aria-pressed="${ui.mcat === c}">${esc(c)}</button>`).join("")}</div>
     <div class="mg-list">${rows || `<p class="nores">Belum ada menu. Tekan "+ Tambah menu" untuk mula.</p>`}</div>`;
 }
@@ -863,6 +1008,14 @@ function renderEditor(anim){
           <div class="field" id="ed-newcat-wrap"${d.newCat != null ? "" : " hidden"}><label for="ed-newcat">Nama kategori baru</label><input id="ed-newcat" maxlength="20" value="${esc(d.newCat || "")}" placeholder="Contoh: Mee"></div>
           <label class="check span2"><input type="checkbox" id="ed-tag"${d.tag ? " checked" : ""}><span>Tanda sebagai <b>Laris</b></span></label>
           <label class="check span2"><input type="checkbox" id="ed-out"${d.out ? " checked" : ""}><span>Stok habis (pelanggan tak boleh order)</span></label>
+          <div class="ed-promo span2" id="ed-promo-box">
+            <label class="check"><input type="checkbox" id="ed-promo"${d.promoOn ? " checked" : ""}><span>Masukkan dalam <b>${esc(HH.name || "Happy Hour")}</b></span></label>
+            <div class="ed-promo-row" id="ed-promo-row"${d.promoOn ? "" : " hidden"}>
+              <div class="field"><label for="ed-ptype">Jenis potongan</label><select id="ed-ptype"><option value="pct"${d.ptype === "pct" ? " selected" : ""}>Peratus (%)</option><option value="rm"${d.ptype === "rm" ? " selected" : ""}>Ringgit (RM)</option></select></div>
+              <div class="field"><label for="ed-pval">Potongan</label><input id="ed-pval" type="number" inputmode="decimal" min="0" step="${d.ptype === "pct" ? 1 : 0.1}" value="${esc(d.pval)}" placeholder="${d.ptype === "pct" ? "20" : "0.50"}"></div>
+              <p class="ed-pprev" id="ed-pprev" aria-live="polite">${promoPreview(d)}</p>
+            </div>
+          </div>
         </div>
         <p class="ed-err" id="ed-err" role="alert" hidden></p>
       </form>
@@ -874,6 +1027,26 @@ function renderEditor(anim){
 }
 
 // Keep what was typed when the editor redraws (e.g. after choosing a photo)
+// Turns the editor's promo fields into {type, value} (value in whole % or sen), or null when unset
+function editorPromo(d){
+  if (!d.promoOn) return null;
+  const v = parseFloat(d.pval);
+  if (!isFinite(v)) return {type: d.ptype, value: NaN};
+  return d.ptype === "pct" ? {type: "pct", value: Math.round(v)} : {type: "rm", value: Math.round(v * 100)};
+}
+function promoPreview(d){
+  const p = editorPromo(d);
+  if (!p) return "";
+  if (d.price == null || !isFinite(p.value)) return "Isi harga dan potongan untuk lihat harga promo.";
+  if (!validPromo(p, d.price)) return p.type === "pct" ? "Potongan mesti antara 1% dan 90%." : "Potongan mesti sekurang-kurangnya RM 0.10 dan harga promo tak kurang dari RM 0.10.";
+  const pp = promoPrice({price: d.price, promo: p});
+  return `Harga promo: <b>${rm(pp)}</b> <s>${rm(d.price)}</s> · pelanggan jimat ${rm(d.price - pp)}`;
+}
+function updatePromoPreview(){
+  readEditor();
+  const el = $("ed-pprev"); if (el) el.innerHTML = promoPreview(ui.edit);
+}
+
 function readEditor(){
   const d = ui.edit; if (!d || !$("ed-name")) return;
   d.name = $("ed-name").value; d.desc = $("ed-desc").value; d.e = $("ed-emoji").value;
@@ -881,19 +1054,24 @@ function readEditor(){
   const c = $("ed-cat").value;
   if (c === "__new"){ d.newCat = $("ed-newcat").value; } else { d.cat = c; d.newCat = null; }
   d.tag = $("ed-tag").checked ? "Laris" : ""; d.out = $("ed-out").checked;
+  d.promoOn = $("ed-promo").checked; d.ptype = $("ed-ptype").value; d.pval = $("ed-pval").value;
 }
 
-function openEditor(id){
+function openEditor(id, opts = {}){
   ui.confirm = null;
   if (id === "new"){
     const cat = ui.mcat !== "Semua" ? ui.mcat : (CATS[0] || "Menu");
-    ui.edit = {id: null, name: "", desc: "", price: null, e: "", cat, newCat: CATS.length ? null : "", tag: "", out: false, img: ""};
+    ui.edit = {id: null, name: "", desc: "", price: null, e: "", cat, newCat: CATS.length ? null : "", tag: "", out: false, img: "",
+      promoOn: false, ptype: "pct", pval: ""};
   } else {
     const m = BY[id]; if (!m) return;
-    ui.edit = {id: m.id, name: m.name, desc: m.desc || "", price: m.price, e: m.e || "", cat: m.cat, newCat: null, tag: m.tag || "", out: isOut(m.id), img: m.img || ""};
+    const p = m.promo;
+    ui.edit = {id: m.id, name: m.name, desc: m.desc || "", price: m.price, e: m.e || "", cat: m.cat, newCat: null, tag: m.tag || "", out: isOut(m.id), img: m.img || "",
+      promoOn: !!p || !!opts.promo, ptype: p ? p.type : "pct", pval: p ? (p.type === "pct" ? String(p.value) : (p.value / 100).toFixed(2)) : (opts.promo ? "20" : "")};
   }
   renderEditor(true);
-  const h = $("ed-h"); if (h) h.focus();
+  if (opts.promo && $("ed-pval")){ $("ed-promo-box").scrollIntoView({block: "center"}); $("ed-pval").focus(); $("ed-pval").select(); }
+  else { const h = $("ed-h"); if (h) h.focus(); }
 }
 function closeEditor(){ ui.edit = null; ui.confirm = null; renderEditor(); }
 
@@ -904,12 +1082,15 @@ function saveEditor(){
   const problem = !name ? "Isi nama menu." :
     d.price == null || d.price < 10 || d.price > 999900 ? "Isi harga antara RM 0.10 dan RM 9999." :
     !cat ? "Isi nama kategori baru." :
-    MENU.some(m => m.id !== d.id && m.name.toLowerCase() === name.toLowerCase()) ? "Nama ini dah ada dalam menu. Guna nama lain." : "";
+    MENU.some(m => m.id !== d.id && m.name.toLowerCase() === name.toLowerCase()) ? "Nama ini dah ada dalam menu. Guna nama lain." :
+    !validPromo(editorPromo(d), d.price) ? (d.ptype === "pct" ? "Potongan Happy Hour mesti antara 1% dan 90%." : "Potongan Happy Hour mesti sekurang-kurangnya RM 0.10, dan harga promo tak kurang dari RM 0.10.") : "";
   if (problem){ err.textContent = problem; err.hidden = false; return; }
 
   const item = {id: d.id || "m" + uid(), cat, name, desc: d.desc.trim(), price: d.price, e: d.e.trim() || "🍽️"};
   if (d.tag) item.tag = d.tag;
   if (d.img) item.img = d.img;
+  const promo = editorPromo(d);
+  if (promo) item.promo = promo;
   const before = MENU;
   const next = d.id ? MENU.map(m => m.id === d.id ? item : m) : [...MENU, item];
   // Keep categories together in the order they first appear
@@ -1024,6 +1205,9 @@ document.addEventListener("click", e => {
   if (d.inc){ if (isOut(d.inc) || !BY[d.inc]) return; ui.cart[d.inc] = (ui.cart[d.inc] || 0) + 1; render(); return; }
   if (d.dec){ ui.cart[d.dec] = Math.max(0, (ui.cart[d.dec] || 0) - 1); if (!ui.cart[d.dec]) delete ui.cart[d.dec]; if (!Object.keys(ui.cart).length) ui.sheet = false; render(); return; }
   if (d.edit) return openEditor(d.edit);
+  if (d.hhmode){ HH.mode = d.hhmode; saveHH(); render(); toast(d.hhmode === "on" ? `${HH.name} aktif sekarang` : d.hhmode === "off" ? `${HH.name} ditutup` : `${HH.name} ikut jadual ${HH.start}–${HH.end}`); return; }
+  if (d.hhday){ const i = +d.hhday; HH.days = HH.days.includes(i) ? HH.days.filter(x => x !== i) : [...HH.days, i].sort(); saveHH(); render(); return; }
+  if (d.hhrm){ const m = BY[d.hhrm]; if (!m) return; delete m.promo; saveMenu(); toast(`${m.name} dibuang dari promo`); render(); return; }
   if (d.mcat){ ui.mcat = d.mcat; renderManager(); return; }
   if (d.move) return moveItem(d.move, +d.dir);
   if (d.catmove) return moveCat(+d.catmove, +d.dir);
@@ -1085,6 +1269,7 @@ document.addEventListener("click", e => {
       Object.keys(ui.cart).forEach(id => { if (!BY[id]) delete ui.cart[id]; });
       toast("Menu asal dipulihkan"); commit(); return;
     case "ed-save": return saveEditor();
+    case "hh-addbtn": { const id = $("hh-pick").value; if (id) openEditor(id, {promo: true}); return; }
     case "ed-del": return deleteItem();
     case "ed-rmimg": readEditor(); ui.edit.img = ""; renderEditor(); return;
   }
@@ -1106,6 +1291,7 @@ document.addEventListener("input", e => {
   if (t.id === "q"){ ui.q = t.value; $("menulist").innerHTML = menuHTML(); }
   if (t.id === "f-shop"){ CFG.shop = t.value.slice(0, 40) || "Nama Kedai"; saveSettings(); render(); }
   if (t.id && t.id.startsWith("ed-") && ui.edit){ const err = $("ed-err"); if (err) err.hidden = true; }
+  if ((t.id === "ed-pval" || t.id === "ed-price") && ui.edit) updatePromoPreview();
 });
 document.addEventListener("change", async e => {
   const t = e.target;
@@ -1117,6 +1303,10 @@ document.addEventListener("change", async e => {
     if (ui.sel > n) ui.sel = 1;
     saveSettings(); render();
   }
+  if (t.id === "ed-promo"){ $("ed-promo-row").hidden = !t.checked; if (t.checked){ if (!$("ed-pval").value) $("ed-pval").value = "20"; $("ed-pval").focus(); } updatePromoPreview(); }
+  if (t.id === "ed-ptype"){ const v = $("ed-pval"); v.step = t.value === "pct" ? "1" : "0.1"; v.placeholder = t.value === "pct" ? "20" : "0.50"; v.value = ""; v.focus(); updatePromoPreview(); }
+  if (t.id === "hh-name"){ HH.name = t.value.trim().slice(0, 24) || "Happy Hour"; saveHH(); render(); }
+  if ((t.id === "hh-start" || t.id === "hh-end") && /^\d\d:\d\d/.test(t.value)){ HH[t.id === "hh-start" ? "start" : "end"] = t.value.slice(0, 5); saveHH(); render(); }
   if (t.id === "ed-cat"){ const w = $("ed-newcat-wrap"); w.hidden = t.value !== "__new"; if (!w.hidden) $("ed-newcat").focus(); }
   if (t.id === "ed-file" && t.files && t.files[0]){
     readEditor();
