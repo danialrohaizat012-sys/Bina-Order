@@ -40,7 +40,12 @@ button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px sol
 .brand h1{margin:0;font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em;line-height:1}
 .brand p{margin:3px 0 0;color:var(--muted);font-size:13px}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap}
-.ghost{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600}
+.ghost{border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600}
+/* Customer-only mode: opened from a table QR (?meja=N) */
+.solo .top,.solo .pitch,.solo .tabs,.solo .p-kitchen,.solo .p-counter,.solo .panel-label{display:none!important}
+.solo .stage{grid-template-columns:minmax(0,1fr)}
+.solo .p-cust{display:grid!important;justify-items:center}
+@media (max-width:480px){.solo body{padding:0}.solo .phone{max-width:none;border:0;border-radius:0;height:100vh;height:100dvh;box-shadow:none}}
 .pitch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .pitch div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;min-width:0}
 .pitch b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
@@ -184,6 +189,7 @@ button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px sol
     </div>
     <div class="top-actions">
       <button class="ghost" id="btn-demo">Simulasi order meja lain</button>
+      <a class="ghost" href="qr.html">Cetak QR meja</a>
       <button class="ghost" id="btn-reset">Reset demo</button>
     </div>
   </header>
@@ -262,6 +268,10 @@ function seed(){
 
 let S = seed();
 const ui = {table:7, view:"menu", cat:"Semua", cart:{}, note:"", sel:2, method:"Tunai", flash:null};
+// Link from a table QR code: ?meja=7 opens the customer screen locked to that table
+const qMeja = parseInt(new URLSearchParams(location.search).get("meja"), 10);
+const SOLO = qMeja >= 1 && qMeja <= TABLES;
+if(SOLO){ ui.table = qMeja; document.documentElement.classList.add("solo"); document.title = `Meja ${qMeja} · ${SHOP}`; }
 
 // Sync between browser tabs/windows (e.g. phone screen in one window, kitchen in another)
 let bc = null;
@@ -332,8 +342,8 @@ function renderCustomer(){
     <div class="ph-head">
       <div class="ph-row"><div><div class="ph-shop">${SHOP}</div><div class="ph-sub">Order di sini, bayar di kaunter</div></div>
         <div class="table-pill"><small>Meja</small><b>${ui.table}</b></div></div>
-      <label class="sim" for="simtable">Simulasi QR meja:
-        <select id="simtable">${Array.from({length:TABLES},(_,i)=>`<option value="${i+1}" ${i+1===ui.table?"selected":""}>Meja ${i+1}</option>`).join("")}</select></label>
+      ${SOLO?"":`<label class="sim" for="simtable">Simulasi QR meja:
+        <select id="simtable">${Array.from({length:TABLES},(_,i)=>`<option value="${i+1}" ${i+1===ui.table?"selected":""}>Meja ${i+1}</option>`).join("")}</select></label>`}
     </div>
     <div class="ph-tabs" role="tablist">
       <button role="tab" data-view="menu" aria-selected="${ui.view==="menu"}">Menu</button>
@@ -457,7 +467,7 @@ document.addEventListener("click", e=>{
     toast(`Order baru dari Meja ${t} (#${String(o.no).padStart(3,"0")})`);
     commit(); return;
   }
-  if(b.id==="btn-reset"){ S=seed(); Object.assign(ui,{table:7,view:"menu",cat:"Semua",cart:{},note:"",sel:2,method:"Tunai"}); toast("Demo dimulakan semula"); commit(); return; }
+  if(b.id==="btn-reset"){ S=seed(); Object.assign(ui,{table:SOLO?qMeja:7,view:"menu",cat:"Semua",cart:{},note:"",sel:2,method:"Tunai"}); toast("Demo dimulakan semula"); commit(); return; }
 });
 document.addEventListener("input", e=>{ if(e.target.id==="note") ui.note=e.target.value; });
 document.addEventListener("change", e=>{

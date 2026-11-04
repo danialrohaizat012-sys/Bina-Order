@@ -16,6 +16,13 @@ Pelanggan scan QR di meja, order sendiri dari telefon, dan bayar di kaunter sele
 2. **Dapur**: order baru, sedang dimasak, siap dihidang.
 3. **Kaunter**: grid meja, bil penuh ikut meja, terima bayaran (Tunai / DuitNow QR / Kad), jualan hari ini.
 
+## Link ikut meja & QR
+
+- `/?meja=7` buka skrin pelanggan sahaja, terus untuk Meja 7 (macam bila pelanggan scan QR di meja).
+- `/qr.html` ialah page cetak QR: masukkan nama kedai dan bilangan meja, kemudian cetak atau simpan PDF (A4, 4 kad satu muka surat).
+
+Library QR (`vendor/qrcode.js`, qrcode-generator 1.4.4, lesen MIT, Kazuhiko Arase) disimpan dalam repo supaya tak bergantung pada CDN.
+
 ## Status
 
 Ini **demo** dalam satu fail (`index.html`), tanpa backend. Data disimpan dalam memori sahaja dan hilang bila page di-refresh. Tab browser yang sama boleh berkongsi data melalui `BroadcastChannel`.
