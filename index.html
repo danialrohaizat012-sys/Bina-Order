@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bina Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: three live screens of one system side by side (customer phone, kitchen, counter); tabs on narrow screens */
+:root{
+  --bg:#EEF0F5; --surface:#FFFFFF; --sunk:#F6F7FA; --ink:#121A2B; --muted:#5B6478; --line:#DCE0E9;
+  --brand:#1B2D5B; --brand-ink:#FFFFFF; --accent:#D3362A; --accent-soft:#FBE6E3;
+  --ok:#1D8350; --ok-soft:#DDF2E6; --warn:#B86E00; --warn-soft:#FBEED6;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1220; --surface:#161D2E; --sunk:#111827; --ink:#E9ECF3; --muted:#99A2B6; --line:#283149;
+  --brand:#2A4180; --brand-ink:#FFFFFF; --accent:#F0594C; --accent-soft:#3A1D1D;
+  --ok:#3CC27F; --ok-soft:#14321F; --warn:#F0A33A; --warn-soft:#3A2A10; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1220; --surface:#161D2E; --sunk:#111827; --ink:#E9ECF3; --muted:#99A2B6; --line:#283149;
+  --brand:#2A4180; --brand-ink:#FFFFFF; --accent:#F0594C; --accent-soft:#3A1D1D;
+  --ok:#3CC27F; --ok-soft:#14321F; --warn:#F0A33A; --warn-soft:#3A2A10; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1400px;margin:0 auto;display:grid;gap:18px}
+
+/* Top */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border-radius:11px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.02em}
+.brand h1{margin:0;font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em;line-height:1}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ghost{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600}
+.pitch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pitch div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;min-width:0}
+.pitch b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.pitch span{color:var(--muted)}
+@media (max-width:760px){.pitch{grid-template-columns:1fr}}
+
+/* Tabs (narrow only) */
+.tabs{display:none;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+.tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:9px 6px;font-weight:600;font-size:14px;color:var(--muted);position:relative}
+.tabs button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink)}
+.tabs .dot{position:absolute;top:6px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+
+.stage{display:grid;grid-template-columns:400px minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+.panel{min-width:0;display:grid;gap:10px}
+.panel-label{display:flex;align-items:baseline;gap:8px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.panel-label i{font-style:normal;font-family:var(--mono);color:var(--accent)}
+@media (max-width:1180px){
+  .tabs{display:flex}
+  .stage{grid-template-columns:minmax(0,1fr)}
+  .stage .panel{display:none}
+  .stage[data-show="cust"] .p-cust,.stage[data-show="kitchen"] .p-kitchen,.stage[data-show="counter"] .p-counter{display:grid}
+  .p-cust{justify-items:center}
+  .p-cust .panel-label{justify-self:stretch;max-width:400px;width:100%;margin:0 auto}
+}
+
+/* ---------- Customer phone ---------- */
+.phone{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden;display:flex;flex-direction:column;height:760px;box-shadow:0 18px 40px -24px rgba(18,26,43,.45)}
+.ph-head{background:var(--brand);color:var(--brand-ink);padding:16px 18px 14px;display:grid;gap:10px}
+.ph-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ph-shop{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em;line-height:1.1}
+.ph-sub{font-size:12px;opacity:.8}
+.table-pill{background:var(--brand-ink);color:var(--brand);border-radius:12px;padding:6px 10px;text-align:center;line-height:1}
+.table-pill small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.table-pill b{font-family:var(--display);font-size:24px}
+.sim{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.9}
+.sim select{font:inherit;font-size:12px;border-radius:8px;border:0;padding:4px 6px;background:rgba(255,255,255,.16);color:var(--brand-ink)}
+.sim select option{color:#121A2B}
+.ph-tabs{display:flex;border-bottom:1px solid var(--line)}
+.ph-tabs button{flex:1;border:0;background:none;padding:12px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;font-size:14px}
+.ph-tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.ph-body{flex:1;overflow-y:auto;padding:12px 14px 16px;display:grid;gap:12px;align-content:start}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.cats button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.cats button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.cat-h{font-family:var(--display);font-weight:600;font-size:15px;margin:6px 0 -4px;color:var(--muted)}
+.item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center}
+.tile{width:56px;height:56px;border-radius:14px;background:var(--sunk);display:grid;place-items:center;font-size:28px}
+.item h4{margin:0;font-size:14.5px;font-weight:700;line-height:1.25}
+.item p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.3}
+.price{font-family:var(--mono);font-size:13px;font-weight:700;margin-top:3px}
+.step{display:flex;align-items:center;gap:6px}
+.step button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:18px;font-weight:700;display:grid;place-items:center;line-height:1}
+.step button.add{background:var(--accent);border-color:var(--accent);color:#fff}
+.step span{min-width:16px;text-align:center;font-weight:700}
+.note{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:13.5px;background:var(--sunk);color:var(--ink);resize:none}
+.cartbar{padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
+.cta{width:100%;border:0;border-radius:14px;background:var(--accent);color:#fff;padding:14px 16px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.cta:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.cta.alt{background:var(--brand);color:var(--brand-ink)}
+.round{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px}
+.round-h{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
+.round-h b{font-family:var(--mono);color:var(--ink)}
+.line{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.line .q{font-family:var(--mono);font-weight:700;color:var(--accent);margin-right:6px}
+.line .amt{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.pill{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.s-baru{background:var(--accent-soft);color:var(--accent)}
+.s-masak{background:var(--warn-soft);color:var(--warn)}
+.s-siap,.s-hidang{background:var(--ok-soft);color:var(--ok)}
+.billbox{background:var(--sunk);border-radius:14px;padding:14px;display:grid;gap:6px}
+.billbox .tot{display:flex;justify-content:space-between;font-weight:700;font-size:16px}
+.billbox .tot span:last-child{font-family:var(--mono)}
+.billbox p{margin:0;font-size:13px;color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+.callbtn{border:1px dashed var(--line);background:none;border-radius:12px;padding:10px;font-weight:600;font-size:13.5px;color:var(--muted)}
+.callbtn.on{border-style:solid;border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+
+/* ---------- Generic screen ---------- */
+.screen{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:14px;min-width:0}
+.screen-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.screen-h h2{margin:0;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.screen-h span{font-size:13px;color:var(--muted)}
+
+/* Kitchen */
+.kcols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.kcols{grid-template-columns:1fr}}
+.kcol{background:var(--sunk);border-radius:14px;padding:10px;display:grid;gap:8px;align-content:start;min-height:220px;min-width:0}
+.kcol-h{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:2px 4px}
+.ticket{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:6px;border-top:4px solid var(--line)}
+.ticket.baru{border-top-color:var(--accent)} .ticket.masak{border-top-color:var(--warn)} .ticket.siap{border-top-color:var(--ok)}
+.ticket.flash{animation:flash 1.2s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 4px var(--accent-soft)}100%{box-shadow:0 0 0 0 transparent}}
+.t-h{display:flex;justify-content:space-between;align-items:baseline}
+.t-h b{font-family:var(--display);font-size:18px}
+.t-h span{font-size:12px;color:var(--muted)}
+.t-h .late{color:var(--accent);font-weight:700}
+.t-items{display:grid;gap:2px;font-size:14px}
+.t-items .q{font-family:var(--mono);font-weight:700;margin-right:6px}
+.t-note{font-size:12.5px;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:5px 8px;font-weight:600}
+.t-btn{border:0;border-radius:10px;padding:9px;font-weight:700;font-size:13px;background:var(--ink);color:var(--surface)}
+.kempty{font-size:12.5px;color:var(--muted);text-align:center;padding:16px 4px}
+
+/* Counter */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--sunk);border-radius:12px;padding:10px 12px;min-width:0}
+.stat small{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat b{font-family:var(--mono);font-size:18px}
+.tables{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tbl{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;text-align:center;display:grid;gap:2px;position:relative;min-height:68px;align-content:center}
+.tbl b{font-family:var(--display);font-size:20px;line-height:1}
+.tbl small{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.tbl.busy{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.tbl.busy small{color:var(--brand-ink);opacity:.85}
+.tbl[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:1px}
+.tbl .bell{position:absolute;top:-6px;right:-6px;background:var(--warn);color:#fff;border-radius:999px;font-size:10.5px;font-weight:700;padding:2px 6px}
+.bill{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px}
+.bill-h{display:flex;justify-content:space-between;align-items:center}
+.bill-h h3{margin:0;font-family:var(--display);font-size:18px}
+.bill-lines{display:grid;gap:6px;border-block:1px dashed var(--line);padding-block:10px}
+.bill .tot{display:flex;justify-content:space-between;font-weight:800;font-size:18px}
+.bill .tot span:last-child{font-family:var(--mono)}
+.pay{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.pay button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 4px;font-weight:600;font-size:13px}
+.pay button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface)}
+.muted{color:var(--muted);font-size:13px;margin:0}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:20;max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion:reduce){.ticket.flash{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">BL</div>
+      <div>
+        <h1>Bina Order</h1>
+        <p>oleh Bina Lab · Order dari meja, bayar di kaunter</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="ghost" id="btn-demo">Simulasi order meja lain</button>
+      <button class="ghost" id="btn-reset">Reset demo</button>
+    </div>
+  </header>
+
+  <section class="pitch" aria-label="Masalah yang diselesaikan">
+    <div><b>Staf terhad</b><span>Customer scan QR dan order sendiri. Tak perlu tunggu buku menu atau staf datang.</span></div>
+    <div><b>Order dengan selesa</b><span>Tiada staf berdiri tunggu depan meja. Customer pilih ikut masa sendiri.</span></div>
+    <div><b>Kaunter tak lupa</b><span>Semua order tersimpan ikut meja. Di kaunter cuma sebut nombor meja, bil dah siap.</span></div>
+  </section>
+
+  <nav class="tabs" role="tablist" aria-label="Pilih skrin">
+    <button role="tab" id="tab-cust" data-show="cust" aria-selected="true">Pelanggan</button>
+    <button role="tab" id="tab-kitchen" data-show="kitchen" aria-selected="false">Dapur</button>
+    <button role="tab" id="tab-counter" data-show="counter" aria-selected="false">Kaunter</button>
+  </nav>
+
+  <main class="stage" id="stage" data-show="cust">
+    <section class="panel p-cust">
+      <div class="panel-label"><i>1</i> Telefon pelanggan · scan QR di meja</div>
+      <div class="phone" id="phone"></div>
+    </section>
+    <section class="panel p-kitchen">
+      <div class="panel-label"><i>2</i> Skrin dapur · tablet atau TV</div>
+      <div class="screen" id="kitchen"></div>
+    </section>
+    <section class="panel p-counter">
+      <div class="panel-label"><i>3</i> Kaunter bayaran</div>
+      <div class="screen" id="counter"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const SHOP = "Kedai Makan Kak Yah";
+const TABLES = 12;
+const MENU = [
+  {id:"kerabu", cat:"Nasi", name:"Nasi Kerabu Ayam Bakar", desc:"Nasi biru, ulam, sambal kelapa, budu", price:9.00, e:"🍛"},
+  {id:"dagang", cat:"Nasi", name:"Nasi Dagang Ikan Tongkol", desc:"Gulai tongkol, telur rebus, acar timun", price:8.50, e:"🍚"},
+  {id:"tumpang", cat:"Nasi", name:"Nasi Tumpang", desc:"Bungkus kon daun pisang, 4 lapis lauk", price:5.00, e:"🍙"},
+  {id:"berlauk", cat:"Nasi", name:"Nasi Berlauk Daging", desc:"Gulai daging, sayur, sambal", price:10.00, e:"🍲"},
+  {id:"laksam", cat:"Laksa", name:"Laksam", desc:"Kuah santan ikan, ulam segar", price:6.00, e:"🍜"},
+  {id:"laksa", cat:"Laksa", name:"Laksa Kelantan", desc:"Kuah putih pekat, sambal", price:6.50, e:"🥣"},
+  {id:"solok", cat:"Lauk", name:"Solok Lada (2 biji)", desc:"Cili hijau sumbat isi ikan", price:4.00, e:"🌶️"},
+  {id:"percik", cat:"Lauk", name:"Ayam Percik", desc:"Bakar, kuah percik manis pedas", price:6.00, e:"🍗"},
+  {id:"lekor", cat:"Lauk", name:"Keropok Lekor", desc:"Goreng panas, cicah sos", price:4.00, e:"🐟"},
+  {id:"telur", cat:"Lauk", name:"Telur Masin", desc:"Sebiji", price:1.50, e:"🥚"},
+  {id:"akok", cat:"Kuih", name:"Akok (5 biji)", desc:"Kuih tradisional Kelantan", price:3.00, e:"🧁"},
+  {id:"itik", cat:"Kuih", name:"Tahi Itik", desc:"Manis, berkuah santan", price:3.00, e:"🍮"},
+  {id:"tarik", cat:"Minuman", name:"Teh Tarik", desc:"Panas atau ais", price:2.50, e:"☕"},
+  {id:"kopio", cat:"Minuman", name:"Kopi O Kelantan", desc:"Kopi kampung, pekat", price:2.00, e:"☕"},
+  {id:"bandung", cat:"Minuman", name:"Sirap Bandung", desc:"Ais", price:3.00, e:"🥤"},
+  {id:"kelapa", cat:"Minuman", name:"Air Kelapa Muda", desc:"Sebiji kelapa", price:4.50, e:"🥥"},
+  {id:"limau", cat:"Minuman", name:"Teh O Ais Limau", desc:"Ais", price:3.00, e:"🍋"},
+];
+const CATS = [...new Set(MENU.map(m=>m.cat))];
+const byId = Object.fromEntries(MENU.map(m=>[m.id,m]));
+const STATUS = {baru:"Diterima dapur", masak:"Sedang dimasak", siap:"Siap, sedang dihantar", hidang:"Dah dihidang"};
+const rm = n => "RM " + n.toFixed(2);
+
+function seed(){
+  const now = Date.now(), m = 60000;
+  return {
+    nextNo: 18,
+    sales: 486.50, bills: 31,
+    calls: [4],
+    orders: [
+      {id:"o1", no:12, table:2, items:[["kerabu",2],["tarik",2]], note:"", status:"hidang", t:now-24*m, paid:false},
+      {id:"o2", no:15, table:2, items:[["akok",1]], note:"", status:"hidang", t:now-9*m, paid:false},
+      {id:"o3", no:14, table:4, items:[["dagang",3],["bandung",2],["kopio",1]], note:"", status:"hidang", t:now-18*m, paid:false},
+      {id:"o4", no:16, table:9, items:[["laksam",2],["solok",1],["limau",2]], note:"Laksam satu tak nak ulam", status:"masak", t:now-6*m, paid:false},
+      {id:"o5", no:17, table:11, items:[["berlauk",1],["percik",1],["kelapa",1]], note:"Kurang pedas", status:"baru", t:now-1*m, paid:false},
+    ]
+  };
+}
+
+let S = seed();
+const ui = {table:7, view:"menu", cat:"Semua", cart:{}, note:"", sel:2, method:"Tunai", flash:null};
+
+// Sync between browser tabs/windows (e.g. phone screen in one window, kitchen in another)
+let bc = null;
+try { bc = new BroadcastChannel("bina-order-demo"); bc.onmessage = e => { if(e.data && e.data.orders){ const fresh = e.data.orders.find(o=>!S.orders.some(x=>x.id===o.id)); S = e.data; if(fresh){ui.flash=fresh.id;beep();} render(); } }; } catch(e){}
+function commit(){ try{ bc && bc.postMessage(S); }catch(e){} render(); }
+
+let actx=null;
+function beep(){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    [880,1175].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;o.connect(g);g.connect(actx.destination);
+      const t=actx.currentTime+i*.14;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.15,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.13);o.start(t);o.stop(t+.14);});
+  }catch(e){}
+}
+let toastT;
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600);}
+const ago = t => { const m=Math.floor((Date.now()-t)/60000); return m<1?"baru tadi":m+" min lalu"; };
+const total = items => items.reduce((s,[id,q])=>s+byId[id].price*q,0);
+const openOrders = tbl => S.orders.filter(o=>o.table===tbl && !o.paid);
+const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- Customer ---------- */
+function renderCustomer(){
+  const mine = openOrders(ui.table);
+  const cartItems = Object.entries(ui.cart).filter(([,q])=>q>0);
+  const cartQty = cartItems.reduce((s,[,q])=>s+q,0);
+  const cartTotal = total(cartItems);
+  const billTotal = mine.reduce((s,o)=>s+total(o.items),0);
+  const calling = S.calls.includes(ui.table);
+
+  let body = "";
+  if(ui.view==="menu"){
+    const cats = ["Semua",...CATS];
+    body += `<div class="cats">${cats.map(c=>`<button data-cat="${c}" aria-pressed="${ui.cat===c}">${c}</button>`).join("")}</div>`;
+    (ui.cat==="Semua"?CATS:[ui.cat]).forEach(c=>{
+      body += `<div class="cat-h">${c}</div>`;
+      MENU.filter(m=>m.cat===c).forEach(m=>{
+        const q = ui.cart[m.id]||0;
+        body += `<div class="item"><div class="tile" aria-hidden="true">${m.e}</div>
+          <div><h4>${m.name}</h4><p>${m.desc}</p><div class="price num">${rm(m.price)}</div></div>
+          <div class="step">${q?`<button data-dec="${m.id}" aria-label="Kurang ${m.name}">−</button><span class="num">${q}</span>`:""}
+          <button class="add" data-inc="${m.id}" aria-label="Tambah ${m.name}">+</button></div></div>`;
+      });
+    });
+    body += `<label class="muted" for="note">Nota untuk dapur</label>
+      <textarea class="note" id="note" rows="2" placeholder="Contoh: kurang pedas, air kurang manis">${esc(ui.note)}</textarea>`;
+  } else {
+    if(!mine.length){
+      body += `<div class="empty"><b>Belum ada pesanan</b>Pilih makanan di tab Menu dan hantar terus ke dapur.</div>`;
+    } else {
+      mine.slice().sort((a,b)=>a.t-b.t).forEach((o,i)=>{
+        body += `<div class="round"><div class="round-h"><span>Pesanan ${i+1} · <b>#${String(o.no).padStart(3,"0")}</b> · ${ago(o.t)}</span>
+          <span class="pill s-${o.status}">${STATUS[o.status]}</span></div>
+          ${o.items.map(([id,q])=>`<div class="line"><span><span class="q">${q}×</span>${byId[id].name}</span><span class="amt num">${rm(byId[id].price*q)}</span></div>`).join("")}
+          ${o.note?`<div class="t-note">${esc(o.note)}</div>`:""}</div>`;
+      });
+      body += `<div class="billbox"><div class="tot"><span>Jumlah bil</span><span class="num">${rm(billTotal)}</span></div>
+        <p>Dah siap makan? Pergi ke kaunter dan sebut <b>Meja ${ui.table}</b>. Bil anda sudah tersedia di sana.</p></div>`;
+    }
+    body += `<button class="callbtn ${calling?"on":""}" id="call">${calling?"Staf dah dipanggil · tekan untuk batal":"Panggil staf ke meja"}</button>`;
+  }
+
+  const foot = ui.view==="menu"
+    ? `<button class="cta" id="send" ${cartQty?"":"disabled"}><span>${cartQty?`Hantar ke dapur · ${cartQty} item`:"Pilih makanan dahulu"}</span><span class="num">${cartQty?rm(cartTotal):""}</span></button>`
+    : `<button class="cta alt" id="more"><span>Tambah pesanan</span><span>+</span></button>`;
+
+  document.getElementById("phone").innerHTML = `
+    <div class="ph-head">
+      <div class="ph-row"><div><div class="ph-shop">${SHOP}</div><div class="ph-sub">Order di sini, bayar di kaunter</div></div>
+        <div class="table-pill"><small>Meja</small><b>${ui.table}</b></div></div>
+      <label class="sim" for="simtable">Simulasi QR meja:
+        <select id="simtable">${Array.from({length:TABLES},(_,i)=>`<option value="${i+1}" ${i+1===ui.table?"selected":""}>Meja ${i+1}</option>`).join("")}</select></label>
+    </div>
+    <div class="ph-tabs" role="tablist">
+      <button role="tab" data-view="menu" aria-selected="${ui.view==="menu"}">Menu</button>
+      <button role="tab" data-view="mine" aria-selected="${ui.view==="mine"}">Pesanan saya${mine.length?` (${mine.length})`:""}</button>
+    </div>
+    <div class="ph-body" id="phbody">${body}</div>
+    <div class="cartbar">${foot}</div>`;
+}
+
+/* ---------- Kitchen ---------- */
+function renderKitchen(){
+  const active = S.orders.filter(o=>!o.paid && o.status!=="hidang").sort((a,b)=>a.t-b.t);
+  const col = (st,label,btn,next) => {
+    const list = active.filter(o=>o.status===st);
+    return `<div class="kcol"><div class="kcol-h"><span>${label}</span><span class="num">${list.length}</span></div>
+      ${list.length?list.map(o=>{const mins=Math.floor((Date.now()-o.t)/60000);return `<div class="ticket ${st} ${ui.flash===o.id?"flash":""}">
+        <div class="t-h"><b>Meja ${o.table}</b><span class="${mins>=15?"late":""}">#${String(o.no).padStart(3,"0")} · ${ago(o.t)}</span></div>
+        <div class="t-items">${o.items.map(([id,q])=>`<div><span class="q">${q}×</span>${byId[id].name}</div>`).join("")}</div>
+        ${o.note?`<div class="t-note">${esc(o.note)}</div>`:""}
+        <button class="t-btn" data-adv="${o.id}" data-next="${next}">${btn}</button></div>`}).join("")
+      :`<div class="kempty">Tiada order</div>`}</div>`;
+  };
+  document.getElementById("kitchen").innerHTML = `
+    <div class="screen-h"><h2>Dapur</h2><span class="num">${active.length} order aktif</span></div>
+    <div class="kcols">${col("baru","Order baru","Mula masak","masak")}${col("masak","Sedang dimasak","Siap","siap")}${col("siap","Siap dihidang","Dah hantar ke meja","hidang")}</div>`;
+}
+
+/* ---------- Counter ---------- */
+function renderCounter(){
+  const busy = [...new Set(S.orders.filter(o=>!o.paid).map(o=>o.table))];
+  let grid = "";
+  for(let t=1;t<=TABLES;t++){
+    const os = openOrders(t), amt = os.reduce((s,o)=>s+total(o.items),0);
+    grid += `<button class="tbl ${os.length?"busy":""}" data-tbl="${t}" aria-pressed="${ui.sel===t}">
+      ${S.calls.includes(t)?`<span class="bell">Panggil</span>`:""}<b>${t}</b><small class="num">${os.length?rm(amt):"kosong"}</small></button>`;
+  }
+  const os = openOrders(ui.sel);
+  let bill;
+  if(!os.length){
+    bill = `<div class="bill"><div class="bill-h"><h3>Meja ${ui.sel}</h3></div><p class="muted">Tiada bil terbuka untuk meja ini. Pilih meja berwarna untuk lihat bil.</p></div>`;
+  } else {
+    const agg = {};
+    os.forEach(o=>o.items.forEach(([id,q])=>agg[id]=(agg[id]||0)+q));
+    const lines = Object.entries(agg);
+    const amt = total(lines);
+    bill = `<div class="bill"><div class="bill-h"><h3>Bil Meja ${ui.sel}</h3><span class="muted">${os.length} pusingan order</span></div>
+      <div class="bill-lines">${lines.map(([id,q])=>`<div class="line"><span><span class="q">${q}×</span>${byId[id].name}</span><span class="amt num">${rm(byId[id].price*q)}</span></div>`).join("")}</div>
+      <div class="tot"><span>Jumlah</span><span class="num">${rm(amt)}</span></div>
+      <div class="pay">${["Tunai","DuitNow QR","Kad"].map(m=>`<button data-method="${m}" aria-pressed="${ui.method===m}">${m}</button>`).join("")}</div>
+      <button class="cta" id="paid"><span>Terima bayaran · ${ui.method}</span><span class="num">${rm(amt)}</span></button></div>`;
+  }
+  document.getElementById("counter").innerHTML = `
+    <div class="screen-h"><h2>Kaunter</h2><span>Hari ini</span></div>
+    <div class="stats">
+      <div class="stat"><small>Jualan</small><b class="num">${rm(S.sales)}</b></div>
+      <div class="stat"><small>Bil selesai</small><b class="num">${S.bills}</b></div>
+      <div class="stat"><small>Meja aktif</small><b class="num">${busy.length}</b></div>
+    </div>
+    <div class="tables">${grid}</div>${bill}`;
+}
+
+function render(){
+  const scroll = document.getElementById("phbody")?.scrollTop || 0;
+  renderCustomer(); renderKitchen(); renderCounter();
+  const pb = document.getElementById("phbody"); if(pb) pb.scrollTop = scroll;
+  const newCount = S.orders.filter(o=>!o.paid&&o.status==="baru").length;
+  const kt = document.getElementById("tab-kitchen");
+  kt.innerHTML = "Dapur" + (newCount?'<span class="dot"></span>':"");
+  ui.flash = null;
+}
+
+function placeOrder(table, items, note){
+  const o = {id:"o"+Date.now()+Math.random().toString(36).slice(2,6), no:S.nextNo++, table, items, note, status:"baru", t:Date.now(), paid:false};
+  S.orders.push(o); ui.flash = o.id; beep();
+  return o;
+}
+
+/* ---------- Events ---------- */
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  const d = b.dataset;
+  if(d.show){ document.getElementById("stage").dataset.show=d.show; document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected", x===b)); return; }
+  if(d.cat){ ui.cat=d.cat; render(); return; }
+  if(d.view){ ui.view=d.view; render(); return; }
+  if(d.inc){ ui.cart[d.inc]=(ui.cart[d.inc]||0)+1; render(); return; }
+  if(d.dec){ ui.cart[d.dec]=Math.max(0,(ui.cart[d.dec]||0)-1); render(); return; }
+  if(b.id==="send"){
+    const items = Object.entries(ui.cart).filter(([,q])=>q>0);
+    if(!items.length) return;
+    const o = placeOrder(ui.table, items, ui.note.trim());
+    ui.cart={}; ui.note=""; ui.view="mine";
+    toast(`Pesanan #${String(o.no).padStart(3,"0")} dihantar ke dapur`);
+    commit(); return;
+  }
+  if(b.id==="more"){ ui.view="menu"; render(); return; }
+  if(b.id==="call"){
+    const i=S.calls.indexOf(ui.table);
+    if(i>=0) S.calls.splice(i,1); else { S.calls.push(ui.table); toast(`Kaunter dimaklumkan: Meja ${ui.table} panggil staf`); }
+    commit(); return;
+  }
+  if(d.adv){
+    const o=S.orders.find(x=>x.id===d.adv); if(o){ o.status=d.next; }
+    if(d.next==="hidang") toast(`Meja ${o.table}: order #${String(o.no).padStart(3,"0")} dah dihidang`);
+    commit(); return;
+  }
+  if(d.tbl){ ui.sel=+d.tbl; const i=S.calls.indexOf(ui.sel); if(i>=0){S.calls.splice(i,1); commit();} else render(); return; }
+  if(d.method){ ui.method=d.method; render(); return; }
+  if(b.id==="paid"){
+    const os=openOrders(ui.sel); const amt=os.reduce((s,o)=>s+total(o.items),0);
+    os.forEach(o=>o.paid=true); S.sales+=amt; S.bills+=1;
+    toast(`Meja ${ui.sel} dibayar (${ui.method}) · ${rm(amt)}`);
+    commit(); return;
+  }
+  if(b.id==="btn-demo"){
+    const free=[]; for(let t=1;t<=TABLES;t++) if(t!==ui.table && !openOrders(t).length) free.push(t);
+    const t = free.length? free[Math.floor(Math.random()*free.length)] : 1;
+    const picks = [["kerabu",1],["tarik",1]];
+    const extra = [["laksa",1],["lekor",1],["bandung",2],["tumpang",2],["percik",1],["kopio",1]];
+    picks.push(extra[Math.floor(Math.random()*extra.length)]);
+    const o = placeOrder(t, picks, Math.random()<.4?"Air kurang manis":"");
+    toast(`Order baru dari Meja ${t} (#${String(o.no).padStart(3,"0")})`);
+    commit(); return;
+  }
+  if(b.id==="btn-reset"){ S=seed(); Object.assign(ui,{table:7,view:"menu",cat:"Semua",cart:{},note:"",sel:2,method:"Tunai"}); toast("Demo dimulakan semula"); commit(); return; }
+});
+document.addEventListener("input", e=>{ if(e.target.id==="note") ui.note=e.target.value; });
+document.addEventListener("change", e=>{
+  if(e.target.id==="simtable"){ ui.table=+e.target.value; ui.cart={}; ui.note=""; ui.view = openOrders(ui.table).length?"mine":"menu"; render(); }
+});
+setInterval(()=>{ if(document.activeElement?.id!=="note") render(); }, 20000);
+render();
+</script>
+</body>
+</html>
